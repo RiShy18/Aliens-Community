@@ -3,4 +3,5 @@ struct Alien{
     int tipo;
     int peso;
     int prioridad;
+    int distInBridge
 };

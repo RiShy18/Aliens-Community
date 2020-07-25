@@ -55,6 +55,20 @@ struct argsMasCorto
     int bridgeLen;
 };
 
+struct argsRR{
+    llist *colonia;
+    llist *extremo;
+    pthread_mutex_t *lockColonia;
+    pthread_mutex_t *lockExtremo;
+    int total;
+    int *generating;
+    int *ready;
+    int numCalen;
+    int cantExtremos;
+    int quantum;
+    int bridgeLen;
+};
+
 
 struct argsBridgeY
 {
@@ -283,6 +297,52 @@ void *calen_FIFO(void *arguments){
                     pthread_mutex_unlock(args->lockColonia);
                 }
                 size = getSize(args->colonia);
+            }
+        }else{
+            pthread_mutex_unlock(args->lockColonia);
+            //printf("Sali del unlock\n");
+        }
+    }
+    printf("Murio el calendarizador %d\n", args->numCalen);
+}
+void *calen_RoundRobin(void *arguments){
+    printf("Empieza el calndarizador\n");
+    struct argsRR * args = (struct argsRR *)arguments;
+    int count = 0;
+    int size = 0;
+    while(1){
+        //printf("Generating: %d\n",*args->generating);
+        //printf("Ready: %d\n", *args->ready);
+        pthread_mutex_lock(args->lockColonia);
+        size = getSize(args->colonia);
+        if(*args->generating == 0 && size == 0){
+            pthread_mutex_unlock(args->lockColonia);
+            break;
+        }
+        //printf("size: %d\n", size);
+        if(*args->ready == 1 && getSize(args->extremo) < args->cantExtremos){
+            while(size != 0){
+                struct Alien *new = (struct Alien *) malloc(sizeof(struct Alien));
+                struct Alien *old = (struct Alien *) getbyId(args->colonia, 0);
+                if(size != 0){
+                    //sleep for quantum
+                    int dist = old -> velocidad * args->quantum;
+                    if(dist == args->bridgeLen){
+                        new->peso = old->peso;
+                        new->prioridad = old->prioridad;
+                        new->tipo = old->tipo;
+                        new->velocidad = old->velocidad;
+                        addLast(args->extremo, new);
+                        delById(args->colonia, 0);
+                        pthread_mutex_unlock(args->lockColonia);
+                        size = getSize(args->colonia);
+                    }else{
+                        new ->distInBridge = args->quantum * new->velocidad;
+                        //Mueve al alien al último lugar de la lista y continua con el siguiente
+                    }
+                
+                size = getSize(args->colonia);
+                }
             }
         }else{
             pthread_mutex_unlock(args->lockColonia);
