@@ -337,7 +337,7 @@ void *calen_RoundRobin(void *arguments){
                         pthread_mutex_unlock(args->lockColonia);
                         size = getSize(args->colonia);
                     }else{
-                        new ->distInBridge = args->quantum * new->velocidad;
+                        new ->distInBridge = args->quantum * new->velocidad; //Guarda la distancia del alien
                         //Mueve al alien al último lugar de la lista y continua con el siguiente
                     }
                 
