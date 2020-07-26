@@ -11,7 +11,7 @@
 #include <list.h>
 #include <move.h>
 #include <algorithms.h>
-
+#include <schedulers.h>
 
 const int SCREEN_WIDTH = 1366;
 const int SCREEN_HEIGHT = 720;
@@ -84,7 +84,7 @@ int calendarizadorA(void *comunidad){
       for(int i = 0; i < llist_get_size(list); i++){
         alien *actual = (alien *) llist_get_by_index(list, i);
         //printf("Posiciones x: %f y:%f\n", actual->pos.x, actual->pos.y);
-        if((actual->pos.x >= 325 && actual->pos.x <= 360) && (160 <= actual->pos.y && actual->pos.y <= 280)){
+        if((actual->pos.x >= 325 && actual->pos.x <= 360) && (220 <= actual->pos.y && actual->pos.y <= 280)){
           if(llist_get_size(aliens_left_north) >= 1){
             int insert = 0;
             for(int i = 0; i < llist_get_size(aliens_left_north); i++){
@@ -108,7 +108,7 @@ int calendarizadorA(void *comunidad){
             printf("size : %d\n", llist_get_size(aliens_left_north));
           }
         }
-        if((actual->pos.x >= 980 && actual->pos.x <= 1020) && (160 <= actual->pos.y && actual->pos.y <= 280)){
+        if((actual->pos.x >= 980 && actual->pos.x <= 1020) && (220 <= actual->pos.y && actual->pos.y <= 280)){
           if(llist_get_size(aliens_right_north) >= 1){
             int insert = 0;
             for(int i = 0; i < llist_get_size(aliens_right_north); i++){
@@ -131,7 +131,7 @@ int calendarizadorA(void *comunidad){
             printf("size : %d\n", llist_get_size(aliens_right_north));
           }
         }
-        if((actual->pos.x >= 655 && actual->pos.x <= 695) && (160 <= actual->pos.y && actual->pos.y <= 280)){
+        if((actual->pos.x >= 655 && actual->pos.x <= 695) && (220 <= actual->pos.y && actual->pos.y <= 280)){
           if(llist_get_size(aliens_center_north) >= 1){
             int insert = 0;
             for(int i = 0; i < llist_get_size(aliens_center_north); i++){
@@ -262,6 +262,36 @@ alien *calen_prioridad(llist *extremo){
   return max;
 }
 
+alien *calen_FIFO(llist *extremo){
+  alien *max = (alien *) llist_get_by_index(extremo, 0);
+  llist_remove_by_index(extremo, 0);
+  return max;
+}
+
+
+alien *calen_mascorto(llist *extremo, int bLength){
+  alien *max = (alien *) malloc(sizeof(alien));
+  max->priority = -1;
+  int index = -1;
+  for(int i = 0; i < llist_get_size(extremo); i++){
+    float tiempo1 = 0;
+    float tiempo2 = 0;
+    alien *temp = llist_get_by_index(extremo, i);
+    if(max->priority == -1){
+      max = temp;
+      index = i;
+    }else{
+      tiempo1 = bLength / max->velocity;
+      tiempo2 = bLength / temp->velocity;
+      if(tiempo2 < tiempo1){
+        max = temp;
+        index = i;
+      }
+    }
+  }
+  llist_remove_by_index(extremo, index);
+  return max;
+}
 
 void *bridgeY(void *arguments){
   argsBridgeY *args = (argsBridgeY *) arguments;
@@ -376,7 +406,9 @@ void *bridgeSurv(void *arguments){
         alienCruzando *temp = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
         pesoActual += temp->alien->weight;
       }
-      alien *go = calen_prioridad(extremoAct);
+      //alien *go = calen_prioridad(extremoAct);
+      //alien *go = calen_FIFO(extremoAct);
+      alien *go = calen_mascorto(extremoAct, args->length);
       if((pesoActual + go->weight) < args->pesoTot){
         alienCruzando *repetido;
         int insert = 0;
@@ -691,7 +723,7 @@ int main(int argc, char *argv[])
     
     pthread_create(&tid1, NULL, &calendarizadorB, aliens_b);
     pthread_create(&tid2, NULL, &calendarizadorA, aliens_a);
-    pthread_create(&tBridgeL, NULL, &bridgeSem, bridgeSemL);
+    pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
     pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
     pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
   }
