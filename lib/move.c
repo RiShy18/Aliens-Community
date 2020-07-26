@@ -112,6 +112,8 @@ void move(point *actual, point dest, float velocity, llist *list, int index, int
       break;
     }else if(((actual->x >= 325 && actual->x <= 360) || (actual->x >= 980 && actual->x <= 1020) || (actual->x >= 655 && actual->x <= 695) && (160 <= actual->y && actual->y <= 280))){
       break;
+    }else{
+      usleep(16666 * 2);
     }
     intersection = 0;
 

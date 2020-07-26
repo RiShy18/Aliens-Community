@@ -85,6 +85,14 @@ typedef struct
 
 typedef struct
 {
+  llist *extremoN;
+  llist *extremoS;
+  int pesoTot;
+  int length;
+} argsBridgeS;
+
+typedef struct
+{
   alien *alien;
   float pos_en_puente;
 } alienCruzando;

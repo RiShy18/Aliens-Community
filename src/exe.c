@@ -274,11 +274,24 @@ void *bridgeY(void *arguments){
   int pasados = 0;
 
   while(1){
-
     if(pasados >= args->Y && llist_get_size(aliens_en_puente) == 0){
       sentido = !sentido;
       pasados = 0;
       printf("Caambio Sentido\n");
+    }else{
+      if(llist_get_size(aliens_en_puente) == 0){
+        int sizeN = llist_get_size(args->extremoN);
+        int sizeS = llist_get_size(args->extremoS);
+        if((0 <= sizeN  && sizeN < args->Y ) || (0 <= sizeS  && sizeS < args->Y)){
+          if(sizeN < sizeS){
+            sentido = 1;
+            pasados = 0;
+          }else{
+            sentido = 0;
+            pasados = 0;
+          }
+        }
+      }
     }
 
     if(sentido == 0){
@@ -294,6 +307,75 @@ void *bridgeY(void *arguments){
         pesoActual += temp->alien->weight;
       }
       printf("Peso actual: %d size: %d, peso_tot: %d\n", pesoActual, llist_get_size(aliens_en_puente), args->pesoTot);
+      alien *go = calen_prioridad(extremoAct);
+      if((pesoActual + go->weight) < args->pesoTot){
+        alienCruzando *repetido;
+        int insert = 0;
+        for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
+          repetido = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+          if(repetido->alien == go){
+            insert = 0;
+            break;
+          }else{
+            insert = 1;
+          }
+        }
+        if(insert || llist_get_size(aliens_en_puente) == 0){
+          go->enterBridge = 1;
+          alienCruzando *insert = (alienCruzando *)malloc(sizeof(alienCruzando));
+          insert->alien = go;
+          insert->pos_en_puente = 0;
+          printf("Me cai\n");
+          llist_insert_end(aliens_en_puente, insert);
+          pasados++;
+        }
+      }
+    }
+    if(llist_get_size(aliens_en_puente) > 0){
+      for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
+        alienCruzando *temp = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+        temp->pos_en_puente += temp->alien->velocity;
+        printf("Posicion en puente: %f\n", temp->pos_en_puente);
+        if(temp->pos_en_puente >= args->length){
+          temp->alien->crossedBridge = 1;
+          llist_remove_by_index(aliens_en_puente, i);
+          break;
+        }
+      }
+    }
+    sleep(1);
+  }
+}
+
+void *bridgeSurv(void *arguments){
+  argsBridgeS *args = (argsBridgeS *) arguments;
+  llist *aliens_en_puente = llist_create(NULL);
+  
+  llist *extremoAct;
+
+  int sentido = 0;
+
+  int pasados = 0;
+
+  while(1){
+
+    if(llist_get_size(args->extremoN) > 0 && llist_get_size(aliens_en_puente) == 0){
+      sentido = 0;
+    }else if(llist_get_size(aliens_en_puente) == 0){
+      sentido = 1;
+    }
+
+    if(sentido == 0){
+      extremoAct = args->extremoN;
+    }else{
+      extremoAct = args->extremoS;
+    }
+    if(llist_get_size(extremoAct) >= 1){
+      int pesoActual = 0;
+      for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
+        alienCruzando *temp = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+        pesoActual += temp->alien->weight;
+      }
       alien *go = calen_prioridad(extremoAct);
       if((pesoActual + go->weight) < args->pesoTot){
         alienCruzando *repetido;
@@ -484,12 +566,33 @@ int main(int argc, char *argv[])
     bridgeYC->pesoTot = 35;
     bridgeYC->length = 42;
 
+    argsBridgeS *bridgeSL = (argsBridgeS *) malloc(sizeof(argsBridgeS));
+
+    bridgeSL->extremoS = aliens_left_south;
+    bridgeSL->extremoN = aliens_left_north;
+    bridgeSL->pesoTot = 35;
+    bridgeSL->length = 42;
+
+    argsBridgeS *bridgeSR = (argsBridgeS *) malloc(sizeof(argsBridgeS));
+
+    bridgeSR->extremoS = aliens_right_south;
+    bridgeSR->extremoN = aliens_right_north;
+    bridgeSR->pesoTot = 35;
+    bridgeSR->length = 42;
+
+    argsBridgeS *bridgeSC = (argsBridgeS *) malloc(sizeof(argsBridgeS));
+
+    bridgeSC->extremoS = aliens_center_south;
+    bridgeSC->extremoN = aliens_center_north;
+    bridgeSC->pesoTot = 35;
+    bridgeSC->length = 42;
+
     
     pthread_create(&tid1, NULL, &calendarizadorB, aliens_b);
     pthread_create(&tid2, NULL, &calendarizadorA, aliens_a);
-    pthread_create(&tBridgeL, NULL, &bridgeY, bridgeYL);
-    pthread_create(&tBridgeC, NULL, &bridgeY, bridgeYC);
-    pthread_create(&tBridgeR, NULL, &bridgeY, bridgeYR);
+    pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
+    pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
+    pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
   }
 
   init_routes(routes_a, routes_b);
@@ -1016,7 +1119,7 @@ int alien_b_thread(void *param)
 
   int hola = generate_random(3, 1);
 
-  //int hola = 1;
+  //int hola = 3;
 
   printf("creando alien\n");
   alien *my_alien = llist_get_by_index(aliens_b, index);
