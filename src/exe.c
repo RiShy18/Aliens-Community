@@ -416,6 +416,96 @@ void *bridgeSurv(void *arguments){
   }
 }
 
+void *bridgeSem(void *arguments){
+  argsBridgeSem *args = (argsBridgeSem *) arguments;
+  llist *aliens_en_puente = llist_create(NULL);
+  
+  llist *extremoAct;
+
+  int sentido = 0;
+
+  int pasados = 0;
+
+  clock_t start, end;
+
+  int tiempoSemaforo = 0;
+
+  start = clock();
+
+  while(1){
+    
+    end = clock();
+
+    float elapsed = (float) (end - start) / CLOCKS_PER_SEC;
+
+    printf("Elapsed time: %f, Sentido: %d\n", elapsed, sentido);
+    if(sentido == 0){
+      if(elapsed >= args->semN && llist_get_size(aliens_en_puente) == 0){
+        sentido = 1;
+        tiempoSemaforo = args->semS;
+        start = clock();
+      }
+    }else{
+      if(elapsed >= args->semS && llist_get_size(aliens_en_puente) == 0){
+        sentido = 0;
+        tiempoSemaforo = args->semN;
+        start = clock();
+      }
+    }
+
+    if(sentido == 0){
+      extremoAct = args->extremoN;
+    }else{
+      extremoAct = args->extremoS;
+    }
+
+    if(llist_get_size(extremoAct) >= 1 && elapsed < tiempoSemaforo){
+      int pesoActual = 0;
+      for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
+        alienCruzando *temp = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+        pesoActual += temp->alien->weight;
+      }
+      printf("Peso actual: %d size: %d, peso_tot: %d\n", pesoActual, llist_get_size(aliens_en_puente), args->pesoTot);
+      alien *go = calen_prioridad(extremoAct);
+      if((pesoActual + go->weight) < args->pesoTot){
+        alienCruzando *repetido;
+        int insert = 0;
+        for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
+          repetido = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+          if(repetido->alien == go){
+            insert = 0;
+            break;
+          }else{
+            insert = 1;
+          }
+        }
+        if(insert || llist_get_size(aliens_en_puente) == 0){
+          go->enterBridge = 1;
+          alienCruzando *insert = (alienCruzando *)malloc(sizeof(alienCruzando));
+          insert->alien = go;
+          insert->pos_en_puente = 0;
+          printf("Me cai\n");
+          llist_insert_end(aliens_en_puente, insert);
+          pasados++;
+        }
+      }
+    }
+    if(llist_get_size(aliens_en_puente) > 0){
+      for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
+        alienCruzando *temp = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+        temp->pos_en_puente += temp->alien->velocity;
+        printf("Posicion en puente: %f\n", temp->pos_en_puente);
+        if(temp->pos_en_puente >= args->length){
+          temp->alien->crossedBridge = 1;
+          llist_remove_by_index(aliens_en_puente, i);
+          break;
+        }
+      }
+    }
+    sleep(1);
+  }
+}
+
 int main(int argc, char *argv[])
 {
   int medium = 0;
@@ -587,10 +677,21 @@ int main(int argc, char *argv[])
     bridgeSC->pesoTot = 35;
     bridgeSC->length = 42;
 
+
+    argsBridgeSem *bridgeSemL = (argsBridgeSem *) malloc(sizeof(argsBridgeSem));
+
+    bridgeSemL->extremoS = aliens_left_south;
+    bridgeSemL->extremoN = aliens_left_north;
+    bridgeSemL->pesoTot = 35;
+    bridgeSemL->length = 42;
+    bridgeSemL->semN = 20;
+    bridgeSemL->semS = 10;
+
+
     
     pthread_create(&tid1, NULL, &calendarizadorB, aliens_b);
     pthread_create(&tid2, NULL, &calendarizadorA, aliens_a);
-    pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
+    pthread_create(&tBridgeL, NULL, &bridgeSem, bridgeSemL);
     pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
     pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
   }
@@ -1036,8 +1137,8 @@ int alien_a_thread(void *param)
 {
   int index = *((int *)param);
 
-  int hola = generate_random(3, 1);
-  //int hola = 1;
+  //int hola = generate_random(3, 1);
+  int hola = 1;
 
   printf("creando alien\n");
   alien *my_alien = llist_get_by_index(aliens_a, index);
@@ -1117,9 +1218,9 @@ int alien_b_thread(void *param)
 {
   int index = *((int *)param);
 
-  int hola = generate_random(3, 1);
+  //int hola = generate_random(3, 1);
 
-  //int hola = 3;
+  int hola = 1;
 
   printf("creando alien\n");
   alien *my_alien = llist_get_by_index(aliens_b, index);

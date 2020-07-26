@@ -83,6 +83,17 @@ typedef struct
   int length;
 } argsBridgeY;
 
+
+typedef struct
+{
+  llist *extremoN;
+  llist *extremoS;
+  int semN;
+  int semS;
+  int pesoTot;
+  int length;
+} argsBridgeSem;
+
 typedef struct
 {
   llist *extremoN;
