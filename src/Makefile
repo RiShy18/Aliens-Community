@@ -1,19 +1,12 @@
-APP = Aliens
-BIN = ../bin
-INCLUDE = ../include
-LIB = ../lib
-SRC = $(APP).c
-LIB_UT = util/libutil.a
-LIB_GRAPH = graphics/libgraphics.a
-#LIB_SEM = semaphore/libsemaphore.a
+APP=exe
+CC=gcc
+ROUTE=../bin/
+FLAGS=-L../lib -I../include -lgui -lutilities -lcfg -llist -lmove -lSDL2_image -lSDL2_ttf -lconfig -lpthread -lm -lschedulers -lalgorithms `sdl2-config --cflags --libs`
 
-CC = gcc
-CFLAGS = -Wall -lm `sdl2-config --cflags --libs` -lSDL2_image -lSDL2_ttf
+BIN=$(ROUTE)$(APP)
+SRC=$(APP).c
 
-LIBS = $(LIB)/$(LIB_UT) $(LIB)/$(LIB_GRAPH) 
+all: COMPILE
 
-
-ALL: APP 
- 
-APP: 
-		$(CC) -o $(BIN)/$(APP) $(SRC) $(LIBS) -I $(INCLUDE) $(CFLAGS)
+COMPILE:
+		$(CC) -o $(BIN) $(SRC) $(FLAGS)

@@ -1,7 +1,7 @@
-all: libs code 
+.PHONY: lib src
 
-libs:
-		(cd lib && make)
+src: lib
+		cd src && make
 
-code:
-		(cd src && make)
+lib:
+		cd lib && make
