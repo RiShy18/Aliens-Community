@@ -3,7 +3,7 @@ Aliens Community on C
 ## Installation
 Please install the contents from Install, follow the instructions from the .txt file
 
-##Usage
+## Usage
 Please use the follow commands to run the program
 
 
