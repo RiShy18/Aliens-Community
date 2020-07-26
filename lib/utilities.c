@@ -35,12 +35,17 @@ int load_map(int map[24][46])
       (map[i][j]) = 1;
       j += 1;
     }
-    else if (ch == 'o')
+    else if (ch == 'y')
     {
       (map[i][j]) = 2;
       j += 1;
     }
     else if (ch == 'p')
+    {
+      (map[i][j]) = 3;
+      j += 1;
+    }
+    else if (ch == 'z')
     {
       (map[i][j]) = 3;
       j += 1;
@@ -174,7 +179,7 @@ int valdite_args(int argc, char *argv[], int *medium)
 {
   if (argc != 3)
   {
-    printf("Usage: ./main <operation_mode (manual/automatic)> <time_medium>\n");
+    printf("Usage: ./main <operation_mode (manual/auto)> <time_medium>\n");
     return 0;
   }
 
@@ -186,11 +191,11 @@ int valdite_args(int argc, char *argv[], int *medium)
 
   if (!is_number(argv[2]))
   {
-    printf("Please Insert a Correct Time Medium\n");
+    printf("Please Insert a Correct Time Medium in Seconds\n");
     return 0;
   }
 
-  if (!strcmp(argv[1], "automatic"))
+  if (!strcmp(argv[1], "auto"))
   {
     *medium = atoi(argv[2]);
   }

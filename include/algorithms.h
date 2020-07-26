@@ -1,6 +1,6 @@
 #ifndef _ALGORITHMS_H
 #define _ALGORITHMS_H
 
-//Hola
+//Algoritmos de Calendarización y puentes
 
 #endif

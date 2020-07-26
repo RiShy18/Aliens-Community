@@ -65,6 +65,19 @@ int init_cfg(void)
   return 1;
 }
 
+void load_alien(int *velocity, int *percentages)
+{
+  config_lookup_int(cf, "velocity", velocity);
+
+  config_lookup_int(cf, "alien_a_base", &percentages[0]);
+  config_lookup_int(cf, "alien_a_alpha", &percentages[1]);
+  config_lookup_int(cf, "alien_a_beta", &percentages[2]);
+
+  config_lookup_int(cf, "alien_b_base", &percentages[3]);
+  config_lookup_int(cf, "alien_b_alpha", &percentages[4]);
+  config_lookup_int(cf, "alien_b_beta", &percentages[5]);
+}
+
 void load_bridge_right(configurable *a)
 {
   config_lookup_int(cf1, "weight", &a->weight_confg);
@@ -104,18 +117,7 @@ void load_bridge_center(configurable *a)
   config_lookup_int(cf3, "y_algorithm", &a->y_algorithm_confg);
 }
 
-void load_alien(int *velocity, int *percentages)
-{
-  config_lookup_int(cf, "velocity", velocity);
 
-  config_lookup_int(cf, "alien_a_base", &percentages[0]);
-  config_lookup_int(cf, "alien_a_alpha", &percentages[1]);
-  config_lookup_int(cf, "alien_a_beta", &percentages[2]);
-
-  config_lookup_int(cf, "alien_b_base", &percentages[3]);
-  config_lookup_int(cf, "alien_b_alpha", &percentages[4]);
-  config_lookup_int(cf, "alien_b_beta", &percentages[5]);
-}
 
 void quit_cfg(void)
 {
