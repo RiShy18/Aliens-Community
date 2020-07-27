@@ -81,6 +81,7 @@ typedef struct
   int Y;
   int pesoTot;
   int length;
+  int calendarizador;
 } argsBridgeY;
 
 
@@ -92,6 +93,7 @@ typedef struct
   int semS;
   int pesoTot;
   int length;
+  int calendarizador;
 } argsBridgeSem;
 
 typedef struct
@@ -100,6 +102,7 @@ typedef struct
   llist *extremoS;
   int pesoTot;
   int length;
+  int calendarizador;
 } argsBridgeS;
 
 typedef struct

@@ -110,11 +110,11 @@ void move(point *actual, point dest, float velocity, llist *list, int index, int
       actual->y += dist_y * velocity;
     }else if((((actual->x >= 350 && actual->x <= 365) || (actual->x >= 1020 && actual->x <= 1025) || (actual->x >= 690 && actual->x <= 695)) && (360 <= actual->y && actual->y <= 445)) && community == 1){
       break;
-    }else if((((actual->x >= 325 && actual->x <= 360) || (actual->x >= 980 && actual->x <= 1020) || (actual->x >= 655 && actual->x <= 695) && (220 <= actual->y && actual->y <= 280)))&& community == 0){
+    }else if((((actual->x >= 325 && actual->x <= 360) || (actual->x >= 980 && actual->x <= 1020) || (actual->x >= 655 && actual->x <= 695) && (230 <= actual->y && actual->y <= 285)))&& community == 0){
       break;
     }
     else{
-      usleep(16666 * 2);
+      usleep(166666 * 2);
     }
     intersection = 0;
 
