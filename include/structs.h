@@ -37,7 +37,7 @@ typedef struct
   float progress;
   float accumulator;
   short working;
-  int *lottery_numbers;
+  int lottery_numbers;
   int weight;
   point pos;
   lpthread_t *thread;

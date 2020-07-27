@@ -294,6 +294,51 @@ alien *calen_mascorto(llist *extremo, int bLength){
   return max;
 }
 
+alien *calen_lotterry(llist *extremo){
+  llist *assign = llist_create(NULL);
+  llist *priority = llist_create(NULL);
+  for(int i = 0; i < llist_get_size(extremo); i++){
+    alien *temp = llist_get_by_index(extremo, i);
+    llist_insert_end(assign, temp);
+  }
+  while(llist_get_size(assign) > 0){
+    alien *prior = calen_prioridad(assign);
+    if(prior->priority == 2){
+      prior->lottery_numbers = 10;
+    }else if(prior->priority == 1){
+      prior->lottery_numbers = 5;
+    }else if(prior->priority == 0){
+      prior->lottery_numbers = 3;
+    }
+    llist_insert_end(priority, prior);
+  }
+  int maxLot = 0;
+  for(int i = 0;  i < llist_get_size(priority); i++){
+    alien *temp = (alien *) llist_get_by_index(priority, i);
+    maxLot += temp->lottery_numbers;
+  }
+
+  int lot = generate_random(maxLot, 1);
+
+  int maxL = 0;
+  int downLimit = 0;
+  int index = -1;
+  alien *winner;
+  for(int i = 0; i < llist_get_size(priority); i++){
+    winner = (alien *) llist_get_by_index(priority, i);
+    maxL = downLimit;
+    downLimit += winner->lottery_numbers;
+      printf("maxL: %d lot: %d downLimit: %d\n", maxL , lot, downLimit);
+    if(maxL < lot && lot < downLimit + 1){
+      index = i; 
+      break;
+    }
+  }
+  llist_remove_by_index(extremo, index);
+  printf("Ya alguien gano la loteria\n");
+  return winner;
+}
+
 void *bridgeY(void *arguments){
   argsBridgeY *args = (argsBridgeY *) arguments;
   llist *aliens_en_puente = llist_create(NULL);
@@ -352,6 +397,10 @@ void *bridgeY(void *arguments){
 
       case 3:
         go = calen_FIFO(extremoAct);
+        break;
+
+      case 4:
+        go = calen_lotterry(extremoAct);
         break;
 
       default:
@@ -442,6 +491,10 @@ void *bridgeSurv(void *arguments){
 
       case 3:
         go = calen_FIFO(extremoAct);
+        break;
+
+      case 4:
+        go = calen_lotterry(extremoAct);
         break;
 
       default:
@@ -554,6 +607,10 @@ void *bridgeSem(void *arguments){
       case 3:
         go = calen_FIFO(extremoAct);
         break;
+
+      case 4:
+        go = calen_lotterry(extremoAct);
+      break;
 
       default:
         go = calen_prioridad(extremoAct);
@@ -1594,8 +1651,8 @@ int alien_a_thread(void *param)
 {
   int index = *((int *)param);
 
-  //int hola = generate_random(3, 1);
-  int hola = 2;
+  int hola = generate_random(3, 1);
+  //int hola = 2;
 
   printf("creando alien\n");
   alien *my_alien = llist_get_by_index(aliens_a, index);
@@ -1675,9 +1732,9 @@ int alien_b_thread(void *param)
 {
   int index = *((int *)param);
 
-  //int hola = generate_random(3, 1);
+  int hola = generate_random(3, 1);
 
-  int hola = 2;
+  //int hola = 2;
 
   printf("creando alien\n");
   alien *my_alien = llist_get_by_index(aliens_b, index);
