@@ -1,12 +1,6 @@
-sudo apt-get install -y libfreetype6
-sudo apt-get install -y freetype2-demos
-sudo apt-get install -y libfreetype6-dev
-
-echo "LIBFREETYPE2 INSTALLED";
-
 sudo apt-get install libconfig-dev
 
-echo "LIBCONFIG INSTALLED";
+echo "LIBCONFIG INSTALADO";
 
 cd ./extras
 unzip SDL2-2.0.12.zip
@@ -19,7 +13,7 @@ make
 sudo make install
 cd ..
 
-echo "SDL INSTALLED";
+echo "SDL INSTALADO";
 
 cd SDL2_image-2.0.5
 ./configure
@@ -27,7 +21,7 @@ make
 sudo make install
 cd ..
 
-echo "SDL IMAGE INSTALLED";
+echo "SDL IMAGE INSTALADO";
 
 cd SDL2_ttf-2.0.15
 ./configure 
@@ -35,6 +29,6 @@ make
 sudo make install
 cd ..
 
-echo "SDL TTF INSTALLED";
+echo "SDL TTF INSTALADO";
 
 echo "DONE";

@@ -682,6 +682,11 @@ char *iconPath = "../assets/images/icon.png";
   SDL_Texture *base_a = load_texture(comAPath, ren);
   SDL_Texture *base_b = load_texture(comBPath, ren);
 
+  SDL_Surface *Icon = load_texture(iconPath, ren);
+  //SDL_SetWindowIcon(win, Icon);
+
+  SDL_FreeSurface(Icon);
+
   int quit = 0;
 
   SDL_Event e;
@@ -984,12 +989,12 @@ char *iconPath = "../assets/images/icon.png";
   llist_free(list_bridge_center);
   llist_free(list_bridge_right);
 
-  llist_free(aliens_left_north);
-  llist_free(aliens_left_south);
-  llist_free(aliens_right_north);
-  llist_free(aliens_right_south);
-  llist_free(aliens_center_north);
-  llist_free(aliens_center_south);
+  //llist_free(aliens_left_north);
+  //llist_free(aliens_left_south);
+  //llist_free(aliens_right_north);
+  //llist_free(aliens_right_south);
+  //llist_free(aliens_center_north);
+  //llist_free(aliens_center_south);
 
   free(bridge_struct_left);
   free(bridge_struct_right);
