@@ -76,9 +76,43 @@ int invader_thread(void *param);
 //int spawn_alien(int community, int type);
 int spawn_invader(void);
 
+char *msg1 = "#################### Controles en Modo Manual ####################\n";
+char *msg2 = "####Comunidad A####\n";
+char *msg3 = "Alien normal presione A\n";
+char *msg5 = "Alien alpha presione S\n";
+char *msg6 = "Alien beta presione D\n";
+char *msg7 = "####Comunidad B####\n";
+char *msg8 = "Alien normal presione J\n";
+char *msg9 = "Alien alpha presione K\n";
+char *msg10 = "Alien beta presione L\n";
+char *msg11 = "####Invasor####\n";
+char *msg12 = "Invasor presione Space\n";
+char *msg13 = "#### Modo Automático ####\n";
+char *msg14 = "En Modo Automático solo los invasores pueden ser colocados\n";
+char *msg15 = "#### Eliminar Aliens ####\n";
+char *msg16 = "Haga click sobre un Alien para Eliminarlo\n";
+char *msgIntro = "Bienvenido a ALIENS'S COMMUNITY\n";
+
 
 int main(int argc, char *argv[])
 {
+  printc(msgIntro,4);
+  printc(msg1, 5);
+  printc(msg2, 5);
+  printc(msg3, 3);
+  printc(msg5, 3);
+  printc(msg6, 3);
+  printc(msg7, 5);
+  printc(msg8, 2);
+  printc(msg9, 2);
+  printc(msg10, 2);
+  printc(msg11, 5);
+  printc(msg12, 1);
+  printc(msg13, 5);
+  printc(msg14, 6);
+  printc(msg15, 5);
+  printc(msg16, 6);
+
   int medium = 0;
   int manual = 0;
 
@@ -110,17 +144,6 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  // if (Lmutex_init(&lock_a, NULL) != 0)
-  // {
-  //   printf("\n Mutex for aliens A init has failed\n");
-  //   return 1;
-  // }
-
-  // if (Lmutex_init(&lock_b, NULL) != 0)
-  // {
-  //   printf("\n Mutex for aliens B init has failed\n");
-  //   return 1;
-  // }
 
   srand(time(NULL));
 
@@ -778,51 +801,6 @@ char *iconPath = "../assets/images/icon.png";
               llist_remove_by_index(aliens_a, i);
               list_a_size--;
               aliens_a_size--;
-              //alien_mouse_pos=llist_get_alien_index(aliens_left_north, curr->id);
-              /*
-              if (alien_mouse_pos != -1)
-              {
-                llist_remove_by_index(aliens_left_north, alien_mouse_pos);
-              }
-              else{
-                alien_mouse_pos = llist_get_alien_index(aliens_center_north, curr->id);
-                if (alien_mouse_pos != -1)
-                {
-                  llist_remove_by_index(aliens_center_north, alien_mouse_pos);
-                }
-                else{
-                  alien_mouse_pos = llist_get_alien_index(aliens_right_north, curr->id);
-                  if (alien_mouse_pos != -1)
-                  {
-                    llist_remove_by_index(aliens_right_north, alien_mouse_pos);
-                  }
-                  else{
-                    alien_mouse_pos = llist_get_alien_index(list_bridge_left, curr->id);
-                    if (alien_mouse_pos != -1)
-                    {
-                      *weight_now_left -= curr->weight;
-                      llist_remove_by_index(list_bridge_left, alien_mouse_pos);
-                    }
-                    else{
-                      alien_mouse_pos = llist_get_alien_index(list_bridge_center, curr->id);
-                      if (alien_mouse_pos != -1)
-                      {
-                        *weight_now_center -= curr->weight;
-                        llist_remove_by_index(list_bridge_center, alien_mouse_pos);
-                      }
-                      else{
-                        alien_mouse_pos = llist_get_alien_index(list_bridge_right, curr->id);
-                        if (alien_mouse_pos != -1)
-                        {
-                          *weight_now_right -= curr->weight;
-                          llist_remove_by_index(list_bridge_right, alien_mouse_pos);
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-*/
             
             }
           }
