@@ -115,5 +115,17 @@ typedef struct
   float pos_en_puente;
 } alienCruzando;
 
+typedef struct
+{
+  llist *comunidadA;
+  llist *comunidadB;
+  llist* aliens_left_north;
+  llist* aliens_left_south;
+  llist* aliens_right_north;
+  llist* aliens_right_south;
+  llist* aliens_center_north;
+  llist* aliens_center_south;
+}argsCalen;
+
 
 #endif
