@@ -183,7 +183,7 @@ int valdite_args(int argc, char *argv[], int *medium)
     return 0;
   }
 
-  if (strcmp(argv[1], "manual") != 0 && strcmp(argv[1], "automatic") != 0)
+  if (strcmp(argv[1], "manual") != 0 && strcmp(argv[1], "auto") != 0)
   {
     printf("Please insert a correct operation mode\n");
     return 0;
