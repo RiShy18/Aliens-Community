@@ -149,7 +149,7 @@ void move_bridge(point *actual, float *progress, int direcction, float velocity,
   move(actual, puente_tope, velocity, list, index, community, inBridge);
 }
 
-void move_invader(point *actual, point dest, float velocity)
+void move_invader(point *actual, point dest, float velocity, llist *aliensA, llist *aliensB, int listASize, int listBSize)
 {
   float dist_x = dest.x - actual->x;
   float dist_y = dest.y - actual->y;
@@ -161,10 +161,88 @@ void move_invader(point *actual, point dest, float velocity)
 
   int moving = 1;
 
+  float tmpx, tmpy;
+
+  SDL_Rect me, you, you2;
+
+  me.h = 28;
+  me.w = 28;
+
+  you.h = 28;
+  you.w = 28;
+
+  you2.h = 28;
+  you2.w =28;
+
+  int size4a = 0;
+  int size4b = 0;
+
   while (moving)
   {
+
     actual->x += dist_x * velocity;
     actual->y += dist_y * velocity;
+
+    int alien_mouse_pos = 0;
+
+    tmpx= actual->x + dist_x *velocity;
+    tmpy= actual->y + dist_y *velocity;
+
+    me.x= tmpx;
+    me.y = tmpy;
+
+    size4a= llist_get_size(aliensA);
+    size4b= llist_get_size(aliensB);
+ 
+    for(int i = 0; i < size4a; i++){
+      alien *curry = llist_get_by_index(aliensA, i);
+
+      if (curry == NULL)
+      {
+        break;
+      }
+
+      you.x= curry->pos.x;
+      you.y= curry->pos.y;
+
+      if(SDL_HasIntersection(&me, &you) && curry->type==2)
+      {
+        printf("Alien Targeteado\n");
+              //lpthread_t *thread = curr->thread;
+              //pthread_exit(thread->pid);
+        printf("Alien Exterminado\n");
+
+        llist_remove_by_index(aliensA, i);
+        listASize-=1;
+        //aliensA.size-=1;
+      }
+    }
+
+    for(int i = 0; i < size4b; i++){
+      alien *curry = llist_get_by_index(aliensB, i);
+
+      if (curry == NULL)
+      {
+        break;
+      }
+
+      you2.x= curry->pos.x;
+      you2.y= curry->pos.y;
+
+      if(SDL_HasIntersection(&me, &you2) && curry->type==2)
+      {
+        printf("Alien Targeteado\n");
+              //lpthread_t *thread = curr->thread;
+              //pthread_exit(thread->pid);
+        printf("Alien Exterminado\n");
+
+        llist_remove_by_index(aliensB, i);
+        listBSize-=1;
+        //aliensB.size-=1;
+      }
+    }
+
+
 
     if (stop_move(actual, dest, dist_x, dist_y))
     {

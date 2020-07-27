@@ -73,7 +73,7 @@ int alien_b_thread(void *param);
 int automatic_mode_thread(void *param);
 int invader_thread(void *param);
 
-int spawn_alien(int community, int type);
+//int spawn_alien(int community, int type);
 int spawn_invader(void);
 
 
@@ -711,31 +711,31 @@ char *iconPath = "../assets/images/icon.png";
         switch (e.key.keysym.sym)
         {
         case SDLK_a:
-          spawn_alien(0, 0);
+          spawn_alien(0, 0); //Alien Normal
           break;
 
         case SDLK_s:
-          spawn_alien(0, 1);
+          spawn_alien(0, 1); //Alien alpha
           break;
 
         case SDLK_d:
-          spawn_alien(0, 2);
+          spawn_alien(0, 2); //Alien beta
           break;
 
-        case SDLK_b:
-          spawn_alien(1, 0);
+        case SDLK_j:
+          spawn_alien(1, 0); //Alien Normal de B
           break;
 
-        case SDLK_n:
-          spawn_alien(1, 1);
+        case SDLK_k:
+          spawn_alien(1, 1); //Alien alpha de B
           break;
 
-        case SDLK_m:
-          spawn_alien(1, 2);
+        case SDLK_l:
+          spawn_alien(1, 2); //Alien beta de B
           break;
 
-        case SDLK_x:
-          spawn_invader();
+        case SDLK_SPACE:
+          spawn_invader(); //Invader
           break;
 
         default:
@@ -745,14 +745,14 @@ char *iconPath = "../assets/images/icon.png";
 
       if ((e.type == SDL_MOUSEBUTTONDOWN) & SDL_BUTTON(SDL_BUTTON_LEFT))
       {
-        printf("OK");
+        //printf("OK");
         SDL_GetMouseState(&mouse_rect.x, &mouse_rect.y);
 
         if (aliens_a_size != 0)
         {
           for (int i = 0; i < aliens_a_size; ++i)
           {
-            printf("OK_A /n");
+            //printf("OK_A /n");
             alien *curr = llist_get_by_index(aliens_a, i);
 
             if (curr == NULL)
@@ -1136,8 +1136,7 @@ int alien_a_thread(void *param)
     move(&my_alien->pos, routes_a[0][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
   }
 
-  /* PARTE ROSADA */
-  //FIFO_scheduler(aliens_left_north, (void *)my_alien);
+  /* Zona Crítica */
 
   for (int i = 0; i < 3; ++i)
   {
@@ -1166,7 +1165,7 @@ int alien_a_thread(void *param)
     my_alien->crossedBridge = 0;
   }
 
-  /* FIN PARTE ROSADA */
+  /* FIN Zona Crítica */
 
   for (int i = 0; i < 3; ++i)
   {
@@ -1336,17 +1335,17 @@ int invader_thread(void *param)
 
   for (int i = 0; i < 3; ++i)
   {
-    move_invader(&invader->pos, route[rand_route][i], velocity * 2);
+    move_invader(&invader->pos, route[rand_route][i], velocity * 2, aliens_a, aliens_b, list_a_size, list_b_size);
   }
 
   for (int i = 0; i < 3; ++i)
   {
-    move_invader(&invader->pos, route[rand_route + 3][i], velocity * 2);
+    move_invader(&invader->pos, route[rand_route + 3][i], velocity * 2, aliens_a, aliens_b, list_a_size, list_b_size);
   }
 
   for (int i = 0; i < 3; ++i)
   {
-    move_invader(&invader->pos, route[7][i], velocity * 2);
+    move_invader(&invader->pos, route[7][i], velocity * 2, aliens_a, aliens_b, list_a_size, list_b_size);
   }
 
   invader_alive = 0;
