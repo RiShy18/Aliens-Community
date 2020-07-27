@@ -59,6 +59,7 @@ int list_a_size = 0;
 int list_b_size = 0;
 int velocity = 0;
 int finish = 0;
+int alien_mouse_pos = 0;
 
 int percentages[6];
 
@@ -1218,12 +1219,14 @@ char *iconPath = "../assets/images/icon.png";
 
       if ((e.type == SDL_MOUSEBUTTONDOWN) & SDL_BUTTON(SDL_BUTTON_LEFT))
       {
+        printf("OK");
         SDL_GetMouseState(&mouse_rect.x, &mouse_rect.y);
 
         if (aliens_a_size != 0)
         {
           for (int i = 0; i < aliens_a_size; ++i)
           {
+            printf("OK_A /n");
             alien *curr = llist_get_by_index(aliens_a, i);
 
             if (curr == NULL)
@@ -1236,12 +1239,60 @@ char *iconPath = "../assets/images/icon.png";
 
             if (SDL_HasIntersection(&mouse_rect, &img_rect))
             {
-              lpthread_t *thread = curr->thread;
-              pthread_exit(thread->pid);
+              printf("Quitando Alien\n");
+              //lpthread_t *thread = curr->thread;
+              //pthread_exit(thread->pid);
+              printf("Alien Eliminado\n");
 
               llist_remove_by_index(aliens_a, i);
               list_a_size--;
               aliens_a_size--;
+              //alien_mouse_pos=llist_get_alien_index(aliens_left_north, curr->id);
+              /*
+              if (alien_mouse_pos != -1)
+              {
+                llist_remove_by_index(aliens_left_north, alien_mouse_pos);
+              }
+              else{
+                alien_mouse_pos = llist_get_alien_index(aliens_center_north, curr->id);
+                if (alien_mouse_pos != -1)
+                {
+                  llist_remove_by_index(aliens_center_north, alien_mouse_pos);
+                }
+                else{
+                  alien_mouse_pos = llist_get_alien_index(aliens_right_north, curr->id);
+                  if (alien_mouse_pos != -1)
+                  {
+                    llist_remove_by_index(aliens_right_north, alien_mouse_pos);
+                  }
+                  else{
+                    alien_mouse_pos = llist_get_alien_index(list_bridge_left, curr->id);
+                    if (alien_mouse_pos != -1)
+                    {
+                      *weight_now_left -= curr->weight;
+                      llist_remove_by_index(list_bridge_left, alien_mouse_pos);
+                    }
+                    else{
+                      alien_mouse_pos = llist_get_alien_index(list_bridge_center, curr->id);
+                      if (alien_mouse_pos != -1)
+                      {
+                        *weight_now_center -= curr->weight;
+                        llist_remove_by_index(list_bridge_center, alien_mouse_pos);
+                      }
+                      else{
+                        alien_mouse_pos = llist_get_alien_index(list_bridge_right, curr->id);
+                        if (alien_mouse_pos != -1)
+                        {
+                          *weight_now_right -= curr->weight;
+                          llist_remove_by_index(list_bridge_right, alien_mouse_pos);
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+*/
+            
             }
           }
         }
@@ -1262,8 +1313,8 @@ char *iconPath = "../assets/images/icon.png";
 
             if (SDL_HasIntersection(&mouse_rect, &img_rect))
             {
-              lpthread_t *thread = curr->thread;
-              pthread_exit(thread->pid);
+              //lpthread_t *thread = curr->thread;
+              //pthread_exit(thread->pid);
 
               llist_remove_by_index(aliens_b, i);
               list_b_size--;
