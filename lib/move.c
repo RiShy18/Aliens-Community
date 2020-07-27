@@ -28,7 +28,7 @@ int stop_move(point *actual, point dest, float dist_x, float dist_y)
   return cond_x && cond_y;
 }
 
-void move(point *actual, point dest, float velocity, llist *list, int index, int community)
+void move(point *actual, point dest, float velocity, llist *list, int index, int community, int inBridge)
 {
   float dist_x = dest.x - actual->x;
   float dist_y = dest.y - actual->y;
@@ -97,6 +97,10 @@ void move(point *actual, point dest, float velocity, llist *list, int index, int
         {
           intersection = 1;
         }
+        if(inBridge)
+        {
+          intersection = 0;
+        }
       }
 
       //Lmutex_lock(lock);
@@ -130,7 +134,7 @@ void move(point *actual, point dest, float velocity, llist *list, int index, int
   actual->y = ceil(actual->y);
 }
 
-void move_bridge(point *actual, float *progress, int direcction, float velocity, llist *list, int index, int community)
+void move_bridge(point *actual, float *progress, int direcction, float velocity, llist *list, int index, int community, int inBridge)
 {
   float init_pos_y = actual->y;
   int bridge_height = 120;
@@ -142,7 +146,7 @@ void move_bridge(point *actual, float *progress, int direcction, float velocity,
     puente_tope.x = actual->x;
     puente_tope.y = 360.0;
   }
-  move(actual, puente_tope, velocity, list, index, community);
+  move(actual, puente_tope, velocity, list, index, community, inBridge);
 }
 
 void move_invader(point *actual, point dest, float velocity)

@@ -339,6 +339,13 @@ alien *calen_lotterry(llist *extremo){
   return winner;
 }
 
+alien *calen_RR(llist *extremo){
+  alien *max = (alien *) llist_get_by_index(extremo, 0);
+  llist_remove_by_index(extremo, 0);
+  return max;
+}
+
+
 void *bridgeY(void *arguments){
   argsBridgeY *args = (argsBridgeY *) arguments;
   llist *aliens_en_puente = llist_create(NULL);
@@ -387,6 +394,9 @@ void *bridgeY(void *arguments){
       alien *go;
       switch (args->calendarizador)
       {
+      case 0:
+        go = calen_RR(extremoAct);
+        break;
       case 1:
         go = calen_prioridad(extremoAct);
         break;
@@ -423,6 +433,14 @@ void *bridgeY(void *arguments){
           usleep(16666 * 2);
           go->enterBridge = 1;
           alienCruzando *insert = (alienCruzando *)malloc(sizeof(alienCruzando));
+          if(go->elapsed != NULL && args->calendarizador == 0){
+            if(sentido){
+              go->pos.x -= 100;
+            }else{
+              go->pos.x += 100;
+            }
+          }
+          go->elapsed = clock();
           insert->alien = go;
           insert->pos_en_puente = 0;
           printf("Me cai\n");
@@ -434,16 +452,31 @@ void *bridgeY(void *arguments){
     if(llist_get_size(aliens_en_puente) > 0){
       for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
         alienCruzando *temp = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+        if(args->calendarizador == 0){
+          temp->pos_en_puente = temp->alien->progress;
+        }
         temp->pos_en_puente += temp->alien->velocity;
+        temp->alien->progress = temp->pos_en_puente;
         printf("Posicion en puente: %f\n", temp->pos_en_puente);
+        float elapsed = (float) (clock() - temp->alien->elapsed) / CLOCKS_PER_SEC;
         if(temp->pos_en_puente >= args->length){
           temp->alien->crossedBridge = 1;
           llist_remove_by_index(aliens_en_puente, i);
           break;
         }
+        if(elapsed >= args->quantum && args->calendarizador == 0){
+          llist_remove_by_index(aliens_en_puente, i);
+          if(sentido){
+            temp->alien->pos.x += 100;
+          }else{
+            temp->alien->pos.x -= 100;
+          }
+          llist_insert_end(extremoAct, temp->alien);
+          break;
+        }
       }
     }
-    sleep(1.5);
+    sleep(1);
   }
 }
 
@@ -457,6 +490,8 @@ void *bridgeSurv(void *arguments){
 
   int pasados = 0;
   printf("PesoTot: %d, Algoritmo: %d\n", args->pesoTot, args->calendarizador);
+
+  clock_t start;
 
 
   while(1){
@@ -481,6 +516,9 @@ void *bridgeSurv(void *arguments){
       alien *go;
       switch (args->calendarizador)
       {
+      case 0:
+        go = calen_RR(extremoAct);
+        break;
       case 1:
         go = calen_prioridad(extremoAct);
         break;
@@ -516,10 +554,17 @@ void *bridgeSurv(void *arguments){
         if(insert || llist_get_size(aliens_en_puente) == 0){
           usleep(16666 * 2);
           go->enterBridge = 1;
+          if(go->elapsed != NULL && args->calendarizador == 0){
+            if(sentido){
+              go->pos.x -= 100;
+            }else{
+              go->pos.x += 100;
+            }
+          }
+          go->elapsed = clock();
           alienCruzando *insert = (alienCruzando *)malloc(sizeof(alienCruzando));
           insert->alien = go;
           insert->pos_en_puente = 0;
-          printf("Me cai\n");
           llist_insert_end(aliens_en_puente, insert);
           pasados++;
         }
@@ -528,16 +573,31 @@ void *bridgeSurv(void *arguments){
     if(llist_get_size(aliens_en_puente) > 0){
       for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
         alienCruzando *temp = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+        if(args->calendarizador == 0){
+          temp->pos_en_puente = temp->alien->progress;
+        }
         temp->pos_en_puente += temp->alien->velocity;
+        temp->alien->progress = temp->pos_en_puente;
         printf("Posicion en puente: %f\n", temp->pos_en_puente);
+        float elapsed = (float) (clock() - temp->alien->elapsed) / CLOCKS_PER_SEC;
         if(temp->pos_en_puente >= args->length){
           temp->alien->crossedBridge = 1;
           llist_remove_by_index(aliens_en_puente, i);
           break;
         }
+        if(elapsed >= args->quantum && args->calendarizador == 0){
+          llist_remove_by_index(aliens_en_puente, i);
+          if(sentido){
+            temp->alien->pos.x += 100;
+          }else{
+            temp->alien->pos.x -= 100;
+          }
+          llist_insert_end(extremoAct, temp->alien);
+          break;
+        }
       }
     }
-    sleep(1.5);
+    sleep(1);
   }
 }
 
@@ -596,6 +656,10 @@ void *bridgeSem(void *arguments){
       alien *go;
       switch (args->calendarizador)
       {
+      case 0:
+        go = calen_prioridad(extremoAct);
+        break;
+
       case 1:
         go = calen_prioridad(extremoAct);
         break;
@@ -631,6 +695,14 @@ void *bridgeSem(void *arguments){
         if(insert || llist_get_size(aliens_en_puente) == 0){
           go->enterBridge = 1;
           alienCruzando *insert = (alienCruzando *)malloc(sizeof(alienCruzando));
+          if(go->elapsed != NULL && args->calendarizador == 0){
+            if(sentido){
+              go->pos.x -= 100;
+            }else{
+              go->pos.x += 100;
+            }
+          }
+          go->elapsed = clock();
           insert->alien = go;
           insert->pos_en_puente = 0;
           printf("Me cai\n");
@@ -643,16 +715,31 @@ void *bridgeSem(void *arguments){
     if(llist_get_size(aliens_en_puente) > 0){
       for(int i = 0; i < llist_get_size(aliens_en_puente); i++){
         alienCruzando *temp = (alienCruzando *) llist_get_by_index(aliens_en_puente, i);
+        if(args->calendarizador == 0){
+          temp->pos_en_puente = temp->alien->progress;
+        }
         temp->pos_en_puente += temp->alien->velocity;
+        temp->alien->progress = temp->pos_en_puente;
         printf("Posicion en puente: %f\n", temp->pos_en_puente);
+        float elapsed = (float) (clock() - temp->alien->elapsed) / CLOCKS_PER_SEC;
         if(temp->pos_en_puente >= args->length){
           temp->alien->crossedBridge = 1;
           llist_remove_by_index(aliens_en_puente, i);
           break;
         }
+        if(elapsed >= args->quantum && args->calendarizador == 0){
+          llist_remove_by_index(aliens_en_puente, i);
+          if(sentido){
+            temp->alien->pos.x += 100;
+          }else{
+            temp->alien->pos.x -= 100;
+          }
+          llist_insert_end(extremoAct, temp->alien);
+          break;
+        }
       }
     }
-    sleep(1.5);
+    sleep(1);
   }
 }
 
@@ -787,6 +874,7 @@ int main(int argc, char *argv[])
     argsBridgeS *bridgeSL = (argsBridgeS *) malloc(sizeof(argsBridgeS));
 
 
+
     switch (bridgeLeft->algorithm_confg)
     {
     case 0:
@@ -797,12 +885,13 @@ int main(int argc, char *argv[])
       bridgeYL->pesoTot = bridgeLeft->weight_confg;
       bridgeYL->length = bridgeLeft->length_confg;
       bridgeYL->calendarizador = bridgeLeft->scheduler_confg;
+      bridgeYL->quantum = bridgeLeft->quantum_confg;
 
       pthread_create(&tBridgeL, NULL, &bridgeY, bridgeYL);
       break;
     
     case 1:
-
+      
       bridgeSemL->extremoS = aliens_left_south;
       bridgeSemL->extremoN = aliens_left_north;
       bridgeSemL->pesoTot = bridgeLeft->weight_confg;
@@ -810,6 +899,7 @@ int main(int argc, char *argv[])
       bridgeSemL->semN = bridgeLeft->semaphore_north_confg;
       bridgeSemL->semS = bridgeLeft->semaphore_south_confg;
       bridgeSemL->calendarizador = bridgeLeft->scheduler_confg;
+      bridgeSemL->quantum = bridgeLeft->quantum_confg;
 
       pthread_create(&tBridgeL, NULL, &bridgeSem, bridgeSemL);
       break;
@@ -822,17 +912,18 @@ int main(int argc, char *argv[])
       bridgeSL->pesoTot = bridgeLeft->weight_confg;
       bridgeSL->length = bridgeLeft->length_confg;
       bridgeSL->calendarizador = bridgeLeft->scheduler_confg;
+      bridgeSL->quantum = bridgeLeft->quantum_confg;
 
       pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
       break;
 
     default:
-
       bridgeSL->extremoS = aliens_left_south;
       bridgeSL->extremoN = aliens_left_north;
       bridgeSL->pesoTot = bridgeLeft->weight_confg;
       bridgeSL->length = bridgeLeft->length_confg;
       bridgeSL->calendarizador = bridgeLeft->scheduler_confg;
+      bridgeSL->quantum = bridgeLeft->quantum_confg;
 
       pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
       break;
@@ -845,11 +936,8 @@ int main(int argc, char *argv[])
     argsBridgeY *bridgeYR = (argsBridgeY *) malloc(sizeof(argsBridgeY));
 
     argsBridgeSem *bridgeSemR = (argsBridgeSem *) malloc(sizeof(argsBridgeSem));
-          
+
     argsBridgeS *bridgeSR = (argsBridgeS *) malloc(sizeof(argsBridgeS));
-
-
-
 
     switch (bridgeRight->algorithm_confg)
     {
@@ -861,6 +949,8 @@ int main(int argc, char *argv[])
       bridgeYR->pesoTot = bridgeRight->weight_confg;
       bridgeYR->length = bridgeRight->length_confg;
       bridgeYR->calendarizador = bridgeRight->scheduler_confg;
+      bridgeYR->quantum = bridgeRight->quantum_confg;
+
       pthread_create(&tBridgeR, NULL, &bridgeY, bridgeYR);
       break;
     
@@ -873,17 +963,21 @@ int main(int argc, char *argv[])
       bridgeSemR->semN = bridgeRight->semaphore_north_confg;
       bridgeSemR->semS = bridgeRight->semaphore_south_confg;
       bridgeSemR->calendarizador = bridgeRight->scheduler_confg;
+      bridgeSemR->quantum = bridgeRight->quantum_confg;
+
 
       pthread_create(&tBridgeR, NULL, &bridgeSem, bridgeSemR);
       break;
       
 
     case 2:
+
       bridgeSR->extremoS = aliens_right_south;
       bridgeSR->extremoN = aliens_right_north;
       bridgeSR->pesoTot = bridgeRight->weight_confg;
       bridgeSR->length = bridgeRight->length_confg;
       bridgeSR->calendarizador = bridgeRight->scheduler_confg;
+      bridgeSR->quantum = bridgeRight->quantum_confg;
 
       pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
       break;
@@ -895,6 +989,7 @@ int main(int argc, char *argv[])
       bridgeSR->pesoTot = bridgeRight->weight_confg;
       bridgeSR->length = bridgeRight->length_confg;
       bridgeSR->calendarizador = bridgeRight->scheduler_confg;
+      bridgeSR->quantum = bridgeRight->quantum_confg;
 
       pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
       break;
@@ -911,8 +1006,6 @@ int main(int argc, char *argv[])
     argsBridgeS *bridgeSC = (argsBridgeS *) malloc(sizeof(argsBridgeS));
 
 
-
-
     switch (bridgeCenter->algorithm_confg)
     {
     case 0:
@@ -923,6 +1016,8 @@ int main(int argc, char *argv[])
       bridgeYC->pesoTot = bridgeCenter->weight_confg;
       bridgeYC->length = bridgeCenter->length_confg;
       bridgeYC->calendarizador = bridgeCenter->scheduler_confg;
+      bridgeYC->quantum = bridgeCenter->quantum_confg;
+
 
       pthread_create(&tBridgeC, NULL, &bridgeY, bridgeYC);
       break;
@@ -936,8 +1031,11 @@ int main(int argc, char *argv[])
       bridgeSemC->semN = bridgeCenter->semaphore_north_confg;
       bridgeSemC->semS = bridgeCenter->semaphore_south_confg;
       bridgeSemC->calendarizador = bridgeCenter->scheduler_confg;
+      bridgeSemC->quantum = bridgeCenter->quantum_confg;
+
 
       pthread_create(&tBridgeC, NULL, &bridgeSem, bridgeSemC);
+      break;
       
 
     case 2:
@@ -947,18 +1045,20 @@ int main(int argc, char *argv[])
       bridgeSC->pesoTot = bridgeCenter->weight_confg;
       bridgeSC->length = bridgeCenter->length_confg;
       bridgeSC->calendarizador = bridgeCenter->scheduler_confg;
+      bridgeSC->quantum = bridgeCenter->quantum_confg;
+
 
       pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
       break;
 
     default:
-
       bridgeSC->extremoS = aliens_center_south;
       bridgeSC->extremoN = aliens_center_north;
       bridgeSC->pesoTot = bridgeCenter->weight_confg;
       bridgeSC->length = bridgeCenter->length_confg;
       bridgeSC->calendarizador = bridgeCenter->scheduler_confg;
-
+      bridgeSC->quantum = bridgeCenter->quantum_confg;
+      
       pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
       break;
     }
@@ -995,6 +1095,7 @@ int main(int argc, char *argv[])
       bridgeYL->pesoTot = bridgeLeft->weight_confg;
       bridgeYL->length = bridgeLeft->length_confg;
       bridgeYL->calendarizador = bridgeLeft->scheduler_confg;
+      bridgeYL->quantum = bridgeLeft->quantum_confg;
 
       pthread_create(&tBridgeL, NULL, &bridgeY, bridgeYL);
       break;
@@ -1008,6 +1109,7 @@ int main(int argc, char *argv[])
       bridgeSemL->semN = bridgeLeft->semaphore_north_confg;
       bridgeSemL->semS = bridgeLeft->semaphore_south_confg;
       bridgeSemL->calendarizador = bridgeLeft->scheduler_confg;
+      bridgeSemL->quantum = bridgeLeft->quantum_confg;
 
       pthread_create(&tBridgeL, NULL, &bridgeSem, bridgeSemL);
       break;
@@ -1020,6 +1122,7 @@ int main(int argc, char *argv[])
       bridgeSL->pesoTot = bridgeLeft->weight_confg;
       bridgeSL->length = bridgeLeft->length_confg;
       bridgeSL->calendarizador = bridgeLeft->scheduler_confg;
+      bridgeSL->quantum = bridgeLeft->quantum_confg;
 
       pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
       break;
@@ -1030,6 +1133,7 @@ int main(int argc, char *argv[])
       bridgeSL->pesoTot = bridgeLeft->weight_confg;
       bridgeSL->length = bridgeLeft->length_confg;
       bridgeSL->calendarizador = bridgeLeft->scheduler_confg;
+      bridgeSL->quantum = bridgeLeft->quantum_confg;
 
       pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
       break;
@@ -1055,6 +1159,7 @@ int main(int argc, char *argv[])
       bridgeYR->pesoTot = bridgeRight->weight_confg;
       bridgeYR->length = bridgeRight->length_confg;
       bridgeYR->calendarizador = bridgeRight->scheduler_confg;
+      bridgeYR->quantum = bridgeRight->quantum_confg;
 
       pthread_create(&tBridgeR, NULL, &bridgeY, bridgeYR);
       break;
@@ -1068,6 +1173,8 @@ int main(int argc, char *argv[])
       bridgeSemR->semN = bridgeRight->semaphore_north_confg;
       bridgeSemR->semS = bridgeRight->semaphore_south_confg;
       bridgeSemR->calendarizador = bridgeRight->scheduler_confg;
+      bridgeSemR->quantum = bridgeRight->quantum_confg;
+
 
       pthread_create(&tBridgeR, NULL, &bridgeSem, bridgeSemR);
       break;
@@ -1080,6 +1187,7 @@ int main(int argc, char *argv[])
       bridgeSR->pesoTot = bridgeRight->weight_confg;
       bridgeSR->length = bridgeRight->length_confg;
       bridgeSR->calendarizador = bridgeRight->scheduler_confg;
+      bridgeSR->quantum = bridgeRight->quantum_confg;
 
       pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
       break;
@@ -1091,6 +1199,7 @@ int main(int argc, char *argv[])
       bridgeSR->pesoTot = bridgeRight->weight_confg;
       bridgeSR->length = bridgeRight->length_confg;
       bridgeSR->calendarizador = bridgeRight->scheduler_confg;
+      bridgeSR->quantum = bridgeRight->quantum_confg;
 
       pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
       break;
@@ -1117,6 +1226,8 @@ int main(int argc, char *argv[])
       bridgeYC->pesoTot = bridgeCenter->weight_confg;
       bridgeYC->length = bridgeCenter->length_confg;
       bridgeYC->calendarizador = bridgeCenter->scheduler_confg;
+      bridgeYC->quantum = bridgeCenter->quantum_confg;
+
 
       pthread_create(&tBridgeC, NULL, &bridgeY, bridgeYC);
       break;
@@ -1130,6 +1241,8 @@ int main(int argc, char *argv[])
       bridgeSemC->semN = bridgeCenter->semaphore_north_confg;
       bridgeSemC->semS = bridgeCenter->semaphore_south_confg;
       bridgeSemC->calendarizador = bridgeCenter->scheduler_confg;
+      bridgeSemC->quantum = bridgeCenter->quantum_confg;
+
 
       pthread_create(&tBridgeC, NULL, &bridgeSem, bridgeSemC);
       break;
@@ -1142,6 +1255,8 @@ int main(int argc, char *argv[])
       bridgeSC->pesoTot = bridgeCenter->weight_confg;
       bridgeSC->length = bridgeCenter->length_confg;
       bridgeSC->calendarizador = bridgeCenter->scheduler_confg;
+      bridgeSC->quantum = bridgeCenter->quantum_confg;
+
 
       pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
       break;
@@ -1152,6 +1267,7 @@ int main(int argc, char *argv[])
       bridgeSC->pesoTot = bridgeCenter->weight_confg;
       bridgeSC->length = bridgeCenter->length_confg;
       bridgeSC->calendarizador = bridgeCenter->scheduler_confg;
+      bridgeSC->quantum = bridgeCenter->quantum_confg;
 
       pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
       break;
@@ -1596,6 +1712,7 @@ int spawn_alien(int community, int type)
   entity->weight = 15;
   entity->enterBridge = 0;
   entity->crossedBridge = 0;
+  entity->elapsed = NULL;
 
   int percentage = (rand() % (200 - 50 + 1)) + 50;
   entity->velocity = generate_alien_velocity(entity->type, velocity, percentage);
@@ -1651,8 +1768,8 @@ int alien_a_thread(void *param)
 {
   int index = *((int *)param);
 
-  int hola = generate_random(3, 1);
-  //int hola = 2;
+  //int hola = generate_random(3, 1);
+  int hola = 1;
 
   printf("creando alien\n");
   alien *my_alien = llist_get_by_index(aliens_a, index);
@@ -1663,7 +1780,7 @@ int alien_a_thread(void *param)
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_a[0][i], my_alien->velocity, aliens_a, my_alien->id, 0);
+    move(&my_alien->pos, routes_a[0][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
   }
 
   /* PARTE ROSADA */
@@ -1671,7 +1788,7 @@ int alien_a_thread(void *param)
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_a[hola][i], my_alien->velocity, aliens_a, my_alien->id, 0);
+    move(&my_alien->pos, routes_a[hola][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
   }
 
   while(my_alien->enterBridge == 0);
@@ -1684,22 +1801,23 @@ int alien_a_thread(void *param)
   jump.x = my_alien->pos.x + 30;
 
 
-  move(&my_alien->pos, jump, my_alien->velocity, aliens_a, my_alien->id, 0);
+  move(&my_alien->pos, jump, my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
 
-  move_bridge(&my_alien->pos, &my_alien->progress, -1, my_alien->velocity, aliens_a, my_alien->id, 0);
+  move_bridge(&my_alien->pos, &my_alien->progress, -1, my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
 
   while(my_alien->crossedBridge == 0);
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_a[hola + 3][i], my_alien->velocity, aliens_a, my_alien->id, 0);
+    move(&my_alien->pos, routes_a[hola + 3][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
+    my_alien->crossedBridge = 0;
   }
 
   /* FIN PARTE ROSADA */
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_a[7][i], my_alien->velocity, aliens_a, my_alien->id, 0);
+    move(&my_alien->pos, routes_a[7][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
   }
 
   //free(param);
@@ -1732,9 +1850,9 @@ int alien_b_thread(void *param)
 {
   int index = *((int *)param);
 
-  int hola = generate_random(3, 1);
+  //int hola = generate_random(3, 1);
 
-  //int hola = 2;
+  int hola = 1;
 
   printf("creando alien\n");
   alien *my_alien = llist_get_by_index(aliens_b, index);
@@ -1745,12 +1863,12 @@ int alien_b_thread(void *param)
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_b[0][i], my_alien->velocity, aliens_b, my_alien->id, 1);
+    move(&my_alien->pos, routes_b[0][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
   }
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_b[hola][i], my_alien->velocity, aliens_b, my_alien->id, 1);
+    move(&my_alien->pos, routes_b[hola][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
   }
 
   printf("Espero puente\n");
@@ -1763,20 +1881,23 @@ int alien_b_thread(void *param)
 
   //printf("XAct: %f, YAct: %f, JX: %f, JY:%f", my_alien->pos.y, my_alien->pos.x, jump.x, jump.y);
 
-  move(&my_alien->pos, jump, my_alien->velocity, aliens_b, my_alien->id, 1);
+  move(&my_alien->pos, jump, my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
 
-  move_bridge(&my_alien->pos, &my_alien->progress, -1, my_alien->velocity, aliens_b, my_alien->id, 1);
+  move_bridge(&my_alien->pos, &my_alien->progress, -1, my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
 
   while(my_alien->crossedBridge == 0);
 
+
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_b[hola + 3][i], my_alien->velocity, aliens_b, my_alien->id, 1);
+    move(&my_alien->pos, routes_b[hola + 3][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
+    my_alien->crossedBridge = 0;
+
   }
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_b[7][i], my_alien->velocity, aliens_b, my_alien->id, 1);
+    move(&my_alien->pos, routes_b[7][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
   }
 
   //free(param);

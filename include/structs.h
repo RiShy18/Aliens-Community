@@ -46,6 +46,7 @@ typedef struct
   int id;
   int enterBridge;
   int crossedBridge;
+  clock_t elapsed;
   pthread_t tid;
 } alien;
 
@@ -82,6 +83,7 @@ typedef struct
   int pesoTot;
   int length;
   int calendarizador;
+  int quantum;
 } argsBridgeY;
 
 
@@ -94,6 +96,7 @@ typedef struct
   int pesoTot;
   int length;
   int calendarizador;
+  int quantum;
 } argsBridgeSem;
 
 typedef struct
@@ -103,6 +106,7 @@ typedef struct
   int pesoTot;
   int length;
   int calendarizador;
+  int quantum;
 } argsBridgeS;
 
 typedef struct
