@@ -284,6 +284,7 @@ alien *calen_RR(llist *extremo){
 
 
 void *bridgeY(void *arguments){
+    printf("BridgeSurY\n");
   argsBridgeY *args = (argsBridgeY *) arguments;
   llist *aliens_en_puente = llist_create(NULL);
   //printf("PesoTot: %d, Algoritmo: %d\n", args->pesoTot, args->calendarizador);
@@ -367,7 +368,6 @@ void *bridgeY(void *arguments){
           }
         }
         if(insert || llist_get_size(aliens_en_puente) == 0){
-          usleep(16666 * 2);
           go->enterBridge = 1;
           alienCruzando *insert = (alienCruzando *)malloc(sizeof(alienCruzando));
           if(go->elapsed != NULL && args->calendarizador == 0){
@@ -396,6 +396,7 @@ void *bridgeY(void *arguments){
         temp->alien->progress = temp->pos_en_puente;
         printf("Posicion en puente: %f\n", temp->pos_en_puente);
         float elapsed = (float) (clock() - temp->alien->elapsed) / CLOCKS_PER_SEC;
+        elapsed = elapsed * 10000;
         if(temp->pos_en_puente >= args->length){
           temp->alien->crossedBridge = 1;
           llist_remove_by_index(aliens_en_puente, i);
@@ -418,6 +419,7 @@ void *bridgeY(void *arguments){
 }
 
 void *bridgeSurv(void *arguments){
+  printf("BridgeSurv\n");
   argsBridgeS *args = (argsBridgeS *) arguments;
   llist *aliens_en_puente = llist_create(NULL);
   
@@ -426,7 +428,7 @@ void *bridgeSurv(void *arguments){
   int sentido = 0;
 
   int pasados = 0;
-  printf("PesoTot: %d, Algoritmo: %d\n", args->pesoTot, args->calendarizador);
+  //printf("PesoTot: %d, Algoritmo: %d\n", args->pesoTot, args->calendarizador);
 
   clock_t start;
 
@@ -489,7 +491,6 @@ void *bridgeSurv(void *arguments){
           }
         }
         if(insert || llist_get_size(aliens_en_puente) == 0){
-          usleep(16666 * 2);
           go->enterBridge = 1;
           if(go->elapsed != NULL && args->calendarizador == 0){
             if(sentido){
@@ -517,6 +518,8 @@ void *bridgeSurv(void *arguments){
         temp->alien->progress = temp->pos_en_puente;
         printf("Posicion en puente: %f\n", temp->pos_en_puente);
         float elapsed = (float) (clock() - temp->alien->elapsed) / CLOCKS_PER_SEC;
+        elapsed = elapsed * 10000;
+        printf("Elapsed: %f Quantum: %d\n", elapsed, args->quantum);
         if(temp->pos_en_puente >= args->length){
           temp->alien->crossedBridge = 1;
           llist_remove_by_index(aliens_en_puente, i);
@@ -539,6 +542,7 @@ void *bridgeSurv(void *arguments){
 }
 
 void *bridgeSem(void *arguments){
+    printf("BridgeSem\n");
   argsBridgeSem *args = (argsBridgeSem *) arguments;
   llist *aliens_en_puente = llist_create(NULL);
   
@@ -561,6 +565,7 @@ void *bridgeSem(void *arguments){
     end = clock();
 
     float elapsed = (float) (end - start) / CLOCKS_PER_SEC;
+    elapsed = elapsed * 10000;
 
     printf("Elapsed time: %f, Sentido: %d\n", elapsed, sentido);
     if(sentido == 0){
@@ -594,7 +599,7 @@ void *bridgeSem(void *arguments){
       switch (args->calendarizador)
       {
       case 0:
-        go = calen_prioridad(extremoAct);
+        go = calen_RR(extremoAct);
         break;
 
       case 1:
@@ -645,7 +650,6 @@ void *bridgeSem(void *arguments){
           printf("Me cai\n");
           llist_insert_end(aliens_en_puente, insert);
           pasados++;
-          usleep(166666 * 2);
         }
       }
     }
@@ -659,6 +663,7 @@ void *bridgeSem(void *arguments){
         temp->alien->progress = temp->pos_en_puente;
         printf("Posicion en puente: %f\n", temp->pos_en_puente);
         float elapsed = (float) (clock() - temp->alien->elapsed) / CLOCKS_PER_SEC;
+        elapsed = elapsed * 10000;
         if(temp->pos_en_puente >= args->length){
           temp->alien->crossedBridge = 1;
           llist_remove_by_index(aliens_en_puente, i);

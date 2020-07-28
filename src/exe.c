@@ -1103,7 +1103,7 @@ int alien_a_thread(void *param)
   int index = *((int *)param);
 
   int random = randomize(3, 1);
-
+  //int random = 2;
 
   
   alien *my_alien = llist_get_by_index(aliens_a, index);
