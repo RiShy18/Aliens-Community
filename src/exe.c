@@ -868,7 +868,7 @@ char *iconPath = "../assets/images/icon.png";
       }
     }
 
-    render_scale_texture(base_a, ren, 10, 200, 170, 170);
+    render_scale_texture(base_a, ren, 0, 250, 170, 170);
     render_scale_texture(base_b, ren, SCREEN_WIDTH - 180, 235, 170, 170);
 
     aliens_a_size = llist_get_size(aliens_a);
