@@ -15,39 +15,30 @@
 #include <sched.h>		
 #include <time.h>
 
-#define MAX_FIBERS 300
-#define STACK (1024 * 1024)
-#define LPNOERR 0
-#define LPMAXFIBERS 1
-#define LPMALLOCERR 2
-#define LPCLONEERR 3
-#define LPINFIBER 4
-#define LPSIGNALERR 5
+#define MAXLPTHREADS 500
+#define STACK (2048 * 2048)
 
-typedef struct
-{
+typedef struct{
+	int id;
+} lmutex_attr_t;
+
+typedef struct{
 	pid_t pid;		 
 	void *stack;	
 	char detached; 
 } lpthreads_t;
 
-typedef struct
-{
-	int id;
-} lpthread_attr_t;
-
-typedef struct
-{
+typedef struct{
 	char lock;
 	pid_t pid;
 } lpthread_mutex_t;
-typedef struct
-{
-	int id;
-} lmutex_attr_t;
 
-int Lpthread_create(lpthreads_t *thread, const lpthread_attr_t *attr, int (*start_func)(void *), void *arg);
-int Lpthread_exit(int pid);
+typedef struct{
+	int id;
+} lpthread_attr_t;
+
+
+int Lpthread_create(lpthreads_t *thread, const lpthread_attr_t *attr, int (*startfunc)(void *), void *arg);
 int Lpthread_yield();
 int Lpthread_join(lpthreads_t thread, void **retval);
 int Lpthread_detach(lpthreads_t thread);
