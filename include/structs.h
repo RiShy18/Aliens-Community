@@ -40,14 +40,14 @@ typedef struct
   int lottery_numbers;
   int weight;
   point pos;
-  lpthread_t *thread;
+  lpthreads_t *thread;
   int type;
   float velocity;
   int id;
   int enterBridge;
   int crossedBridge;
   clock_t elapsed;
-  pthread_t tid;
+  lpthreads_t tid;
 } alien;
 
 typedef struct
