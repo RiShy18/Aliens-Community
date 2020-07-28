@@ -1,5 +1,6 @@
 sudo apt-get update -y
 sudo apt-get install cmake libfreetype6-dev libfontconfig1-dev xclip
+sudo apt-get install xorg-dev
 sudo apt-get install -y libfreetype6
 sudo apt-get install -y freetype2-demos
 sudo apt-get install -y libfreetype6-dev
