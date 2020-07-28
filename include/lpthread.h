@@ -23,14 +23,14 @@ typedef struct{
 } lmutex_attr_t;
 
 typedef struct{
-	pid_t pid;		 
-	void *stack;	
-	char detached; 
+	pid_t pid;	
+	char detached; 		 
+	void *stack;
 } lpthreads_t;
 
 typedef struct{
-	char lock;
 	pid_t pid;
+	char lock;
 } lpthread_mutex_t;
 
 typedef struct{
