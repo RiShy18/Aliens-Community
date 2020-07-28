@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include <pthread.h>
+#include <lpthread.h>
 #include <unistd.h>
 #include <math.h>
 #include <stdlib.h>
@@ -66,7 +66,7 @@ int percentages[6];
 // lpthread_mutex_t lock_a;
 // lpthread_mutex_t lock_b;
 
-pthread_t invader_thread_id;
+lpthreads_t invader_thread_id;
 
 int alien_a_thread(void *param);
 int alien_b_thread(void *param);
@@ -196,16 +196,16 @@ int main(int argc, char *argv[])
   params_left->weight_now = weight_now_left;
   params_left->bridge_struct = bridge_struct_left;
 
-  pthread_t algorithms;
+  lpthreads_t algorithms;
 
-  //Lthread_create(&algorithms, NULL, &semaphore_algorithm, params_left);
+  //Lpthread_create(&algorithms, NULL, &semaphore_algorithm, params_left);
 
   invader_alive = 0;
 
   memset(percentages, 0, 6);
   load_alien(&velocity, percentages);
 
-  pthread_t automatic_mode;
+  lpthreads_t automatic_mode;
 
   if (medium != 0)
   {
@@ -214,8 +214,8 @@ int main(int argc, char *argv[])
     double *arg = malloc(sizeof(*arg));
     *arg = (float)medium / 100;
 
-    pthread_t tid1, tid2 ,tBridgeL, tBridgeC, tBridgeR;
-    pthread_create(&automatic_mode, NULL, &automatic_mode_thread, arg);
+    lpthreads_t tid1, tid2 ,tBridgeL, tBridgeC, tBridgeR;
+    Lpthread_create(&automatic_mode, NULL, &automatic_mode_thread, arg);
 
     argsCalen *argsC = (argsCalen *) malloc(sizeof(argsCalen));
     argsC->aliens_center_north = aliens_center_north;
@@ -227,8 +227,8 @@ int main(int argc, char *argv[])
     argsC->comunidadA = aliens_a;
     argsC->comunidadB = aliens_b;
 
-    pthread_create(&tid1, NULL, &calendarizadorB, argsC);
-    pthread_create(&tid2, NULL, &calendarizadorA, argsC);
+    Lpthread_create(&tid1, NULL, &calendarizadorB, argsC);
+    Lpthread_create(&tid2, NULL, &calendarizadorA, argsC);
 
     configurable *bridgeLeft = (configurable *)malloc(sizeof(configurable));
 
@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
       bridgeYL->calendarizador = bridgeLeft->scheduler_confg;
       bridgeYL->quantum = bridgeLeft->quantum_confg;
 
-      pthread_create(&tBridgeL, NULL, &bridgeY, bridgeYL);
+      Lpthread_create(&tBridgeL, NULL, &bridgeY, bridgeYL);
       break;
     
     case 1:
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
       bridgeSemL->calendarizador = bridgeLeft->scheduler_confg;
       bridgeSemL->quantum = bridgeLeft->quantum_confg;
 
-      pthread_create(&tBridgeL, NULL, &bridgeSem, bridgeSemL);
+      Lpthread_create(&tBridgeL, NULL, &bridgeSem, bridgeSemL);
       break;
       
 
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
       bridgeSL->calendarizador = bridgeLeft->scheduler_confg;
       bridgeSL->quantum = bridgeLeft->quantum_confg;
 
-      pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
+      Lpthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
       break;
 
     default:
@@ -292,7 +292,7 @@ int main(int argc, char *argv[])
       bridgeSL->calendarizador = bridgeLeft->scheduler_confg;
       bridgeSL->quantum = bridgeLeft->quantum_confg;
 
-      pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
+      Lpthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
       break;
     }
 
@@ -318,7 +318,7 @@ int main(int argc, char *argv[])
       bridgeYR->calendarizador = bridgeRight->scheduler_confg;
       bridgeYR->quantum = bridgeRight->quantum_confg;
 
-      pthread_create(&tBridgeR, NULL, &bridgeY, bridgeYR);
+      Lpthread_create(&tBridgeR, NULL, &bridgeY, bridgeYR);
       break;
     
     case 1:
@@ -333,7 +333,7 @@ int main(int argc, char *argv[])
       bridgeSemR->quantum = bridgeRight->quantum_confg;
 
 
-      pthread_create(&tBridgeR, NULL, &bridgeSem, bridgeSemR);
+      Lpthread_create(&tBridgeR, NULL, &bridgeSem, bridgeSemR);
       break;
       
 
@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
       bridgeSR->calendarizador = bridgeRight->scheduler_confg;
       bridgeSR->quantum = bridgeRight->quantum_confg;
 
-      pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
+      Lpthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
       break;
 
     default:
@@ -358,7 +358,7 @@ int main(int argc, char *argv[])
       bridgeSR->calendarizador = bridgeRight->scheduler_confg;
       bridgeSR->quantum = bridgeRight->quantum_confg;
 
-      pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
+      Lpthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
       break;
     }
 
@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
       bridgeYC->quantum = bridgeCenter->quantum_confg;
 
 
-      pthread_create(&tBridgeC, NULL, &bridgeY, bridgeYC);
+      Lpthread_create(&tBridgeC, NULL, &bridgeY, bridgeYC);
       break;
     
     case 1:
@@ -401,7 +401,7 @@ int main(int argc, char *argv[])
       bridgeSemC->quantum = bridgeCenter->quantum_confg;
 
 
-      pthread_create(&tBridgeC, NULL, &bridgeSem, bridgeSemC);
+      Lpthread_create(&tBridgeC, NULL, &bridgeSem, bridgeSemC);
       break;
       
 
@@ -415,7 +415,7 @@ int main(int argc, char *argv[])
       bridgeSC->quantum = bridgeCenter->quantum_confg;
 
 
-      pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
+      Lpthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
       break;
 
     default:
@@ -426,7 +426,7 @@ int main(int argc, char *argv[])
       bridgeSC->calendarizador = bridgeCenter->scheduler_confg;
       bridgeSC->quantum = bridgeCenter->quantum_confg;
       
-      pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
+      Lpthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
       break;
     }
 
@@ -435,7 +435,7 @@ int main(int argc, char *argv[])
   {
     printf("Manual Mode Selected\n");
     manual = 1;
-    pthread_t tid1, tid2 ,tBridgeL, tBridgeC, tBridgeR;
+    lpthreads_t tid1, tid2 ,tBridgeL, tBridgeC, tBridgeR;
 
     argsCalen *argsC = (argsCalen *) malloc(sizeof(argsCalen));
     argsC->aliens_center_north = aliens_center_north;
@@ -447,8 +447,8 @@ int main(int argc, char *argv[])
     argsC->comunidadA = aliens_a;
     argsC->comunidadB = aliens_b;
 
-    pthread_create(&tid1, NULL, &calendarizadorB, argsC);
-    pthread_create(&tid2, NULL, &calendarizadorA, argsC);
+    Lpthread_create(&tid1, NULL, &calendarizadorB, argsC);
+    Lpthread_create(&tid2, NULL, &calendarizadorA, argsC);
     configurable *bridgeLeft = (configurable *)malloc(sizeof(configurable));
 
     load_bridge_left(bridgeLeft);
@@ -473,7 +473,7 @@ int main(int argc, char *argv[])
       bridgeYL->calendarizador = bridgeLeft->scheduler_confg;
       bridgeYL->quantum = bridgeLeft->quantum_confg;
 
-      pthread_create(&tBridgeL, NULL, &bridgeY, bridgeYL);
+      Lpthread_create(&tBridgeL, NULL, &bridgeY, bridgeYL);
       break;
     
     case 1:
@@ -487,7 +487,7 @@ int main(int argc, char *argv[])
       bridgeSemL->calendarizador = bridgeLeft->scheduler_confg;
       bridgeSemL->quantum = bridgeLeft->quantum_confg;
 
-      pthread_create(&tBridgeL, NULL, &bridgeSem, bridgeSemL);
+      Lpthread_create(&tBridgeL, NULL, &bridgeSem, bridgeSemL);
       break;
       
 
@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
       bridgeSL->calendarizador = bridgeLeft->scheduler_confg;
       bridgeSL->quantum = bridgeLeft->quantum_confg;
 
-      pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
+      Lpthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
       break;
 
     default:
@@ -511,7 +511,7 @@ int main(int argc, char *argv[])
       bridgeSL->calendarizador = bridgeLeft->scheduler_confg;
       bridgeSL->quantum = bridgeLeft->quantum_confg;
 
-      pthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
+      Lpthread_create(&tBridgeL, NULL, &bridgeSurv, bridgeSL);
       break;
     }
 
@@ -537,7 +537,7 @@ int main(int argc, char *argv[])
       bridgeYR->calendarizador = bridgeRight->scheduler_confg;
       bridgeYR->quantum = bridgeRight->quantum_confg;
 
-      pthread_create(&tBridgeR, NULL, &bridgeY, bridgeYR);
+      Lpthread_create(&tBridgeR, NULL, &bridgeY, bridgeYR);
       break;
     
     case 1:
@@ -552,7 +552,7 @@ int main(int argc, char *argv[])
       bridgeSemR->quantum = bridgeRight->quantum_confg;
 
 
-      pthread_create(&tBridgeR, NULL, &bridgeSem, bridgeSemR);
+      Lpthread_create(&tBridgeR, NULL, &bridgeSem, bridgeSemR);
       break;
       
 
@@ -565,7 +565,7 @@ int main(int argc, char *argv[])
       bridgeSR->calendarizador = bridgeRight->scheduler_confg;
       bridgeSR->quantum = bridgeRight->quantum_confg;
 
-      pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
+      Lpthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
       break;
 
     default:
@@ -577,7 +577,7 @@ int main(int argc, char *argv[])
       bridgeSR->calendarizador = bridgeRight->scheduler_confg;
       bridgeSR->quantum = bridgeRight->quantum_confg;
 
-      pthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
+      Lpthread_create(&tBridgeR, NULL, &bridgeSurv, bridgeSR);
       break;
     }
 
@@ -605,7 +605,7 @@ int main(int argc, char *argv[])
       bridgeYC->quantum = bridgeCenter->quantum_confg;
 
 
-      pthread_create(&tBridgeC, NULL, &bridgeY, bridgeYC);
+      Lpthread_create(&tBridgeC, NULL, &bridgeY, bridgeYC);
       break;
     
     case 1:
@@ -620,7 +620,7 @@ int main(int argc, char *argv[])
       bridgeSemC->quantum = bridgeCenter->quantum_confg;
 
 
-      pthread_create(&tBridgeC, NULL, &bridgeSem, bridgeSemC);
+      Lpthread_create(&tBridgeC, NULL, &bridgeSem, bridgeSemC);
       break;
       
 
@@ -634,7 +634,7 @@ int main(int argc, char *argv[])
       bridgeSC->quantum = bridgeCenter->quantum_confg;
 
 
-      pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
+      Lpthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
       break;
 
     default:
@@ -645,7 +645,7 @@ int main(int argc, char *argv[])
       bridgeSC->calendarizador = bridgeCenter->scheduler_confg;
       bridgeSC->quantum = bridgeCenter->quantum_confg;
 
-      pthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
+      Lpthread_create(&tBridgeC, NULL, &bridgeSurv, bridgeSC);
       break;
     }
 
@@ -794,7 +794,7 @@ char *iconPath = "../assets/images/icon.png";
             if (SDL_HasIntersection(&mouse_rect, &img_rect))
             {
               printf("Quitando Alien\n");
-              //lpthread_t *thread = curr->thread;
+              //lpthreads_t *thread = curr->thread;
               //pthread_exit(thread->pid);
               printf("Alien Eliminado\n");
 
@@ -822,7 +822,7 @@ char *iconPath = "../assets/images/icon.png";
 
             if (SDL_HasIntersection(&mouse_rect, &img_rect))
             {
-              //lpthread_t *thread = curr->thread;
+              //lpthreads_t *thread = curr->thread;
               //pthread_exit(thread->pid);
 
               llist_remove_by_index(aliens_b, i);
@@ -995,7 +995,7 @@ char *iconPath = "../assets/images/icon.png";
         printf("INDEX OUT OF RANGE ERROR. BREAKING LOOP\n");
         break;
       }
-      pthread_join((curr->thread), NULL);
+      Lpthread_join(*(curr->thread), NULL);
       printf("THREAD FOR ALIEN A INDEX %d JOINED\n", i);
     }
   }
@@ -1012,14 +1012,14 @@ char *iconPath = "../assets/images/icon.png";
         printf("INDEX OUT OF RANGE ERROR. BREAKING LOOP\n");
         break;
       }
-      pthread_join((curr->thread), NULL);
+      Lpthread_join(*(curr->thread), NULL);
       printf("THREAD FOR ALIEN B INDEX %d JOINED\n", i);
     }
   }
 
   printf("ALIENS B JOINED\n");
 
-  pthread_join(automatic_mode, NULL);
+  Lpthread_join(automatic_mode, NULL);
 
   llist_free(aliens_a);
   llist_free(aliens_b);
@@ -1034,7 +1034,7 @@ int spawn_alien(int community, int type)
   int *arg = malloc(sizeof(*arg));
 
   alien *entity = (alien *)malloc(sizeof(alien));
-  pthread_t *thread = (pthread_t *)malloc(sizeof(pthread_t));
+  lpthreads_t *thread = (lpthreads_t *)malloc(sizeof(lpthreads_t));
 
   entity->thread = thread;
   entity->type = type;
@@ -1062,7 +1062,7 @@ int spawn_alien(int community, int type)
 
     llist_insert_by_index(aliens_a, entity, list_a_size);
 
-    iret1 = pthread_create(&entity->tid, NULL, &alien_a_thread, arg);
+    iret1 = Lpthread_create(&entity->tid, NULL, &alien_a_thread, arg);
 
     list_a_size++;
   }
@@ -1075,14 +1075,14 @@ int spawn_alien(int community, int type)
 
     llist_insert_by_index(aliens_b, entity, list_b_size);
 
-    iret1 = pthread_create(entity->thread, NULL, &alien_b_thread, arg);
+    iret1 = Lpthread_create(entity->thread, NULL, &alien_b_thread, arg);
 
     list_b_size++;
   }
 
   if (iret1)
   {
-    fprintf(stderr, "Error - pthread_create() return code: %d\n", iret1);
+    fprintf(stderr, "Error - Lpthread_create() return code: %d\n", iret1);
     return -1;
   }
 
@@ -1096,7 +1096,7 @@ int spawn_invader(void)
     invader_alive = 1;
     invader = (alien *)malloc(sizeof(alien));
 
-    pthread_create(&invader_thread_id, NULL, &invader_thread, NULL);
+    Lpthread_create(&invader_thread_id, NULL, &invader_thread, NULL);
   }
 }
 

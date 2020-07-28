@@ -1,24 +1,35 @@
-#ifndef _LPTHREAD_H
-#define _LPTHREAD_H
-#include <ucontext.h>
-#include <sys/syscall.h> // For call to gettid
-#include <sys/types.h> /* For pid_t */
-#include <sys/wait.h>	 /* For wait */
-#include <unistd.h>		 /* For getpid */
+#ifndef lpthreads
+#define lpthreads
 
-#define STACK_SIZE (16*1024)
-#define NUM_LOCKS 10
-#define CONDITIONS_PER_LOCK 10 
+#include <malloc.h>	
+#include <unistd.h>	
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/syscall.h>
+#include <string.h>
+#include <stdarg.h>	 
+#include <signal.h>		
+#include <sys/types.h> 
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <sched.h>		
+#include <time.h>
 
-/* The LPthread Structure
-*  Contains the information about individual lpthreads.
-*/
+#define MAX_FIBERS 300
+#define STACK (1024 * 1024)
+#define LPNOERR 0
+#define LPMAXFIBERS 1
+#define LPMALLOCERR 2
+#define LPCLONEERR 3
+#define LPINFIBER 4
+#define LPSIGNALERR 5
+
 typedef struct
 {
-	pid_t pid;		 /* The pid of the child thread as returned by clone */
-	void *stack;	 /* The stack pointer */
-	char detached; // Detached or not
-} lpthread_t;
+	pid_t pid;		 
+	void *stack;	
+	char detached; 
+} lpthreads_t;
 
 typedef struct
 {
@@ -27,30 +38,26 @@ typedef struct
 
 typedef struct
 {
-	char locked;
+	char lock;
 	pid_t pid;
 } lpthread_mutex_t;
 typedef struct
 {
 	int id;
-} lpthread_mutexattr_t;
+} lmutex_attr_t;
 
-//the type of function used to run your threads
-
-extern void Lmutex_init();
-extern int Lthread_create( void* (*func) (void *), void *argPtr); 
-extern void Lthread_yield(); 
-extern void Lthread_join(int thread_id, void **result);
-
-//exits the current thread -- closing the main thread, will terminate the program
-extern void Lthread_end(void *result); 
-
-extern void Lmutex_trylock(int lockNum); 
-extern void Lmutex_unlock(int lockNum); 
-extern void threadWait(int lockNum, int conditionNum); 
-extern void threadSignal(int lockNum, int conditionNum); 
-
-//this 
-extern int interruptsAreDisabled;
+int Lpthread_create(lpthreads_t *thread, const lpthread_attr_t *attr, int (*start_func)(void *), void *arg);
+int Lpthread_exit(int pid);
+int Lpthread_yield();
+int Lpthread_join(lpthreads_t thread, void **retval);
+int Lpthread_detach(lpthreads_t thread);
+void Lpthread_end();
+int Lpthread_mutex_destroy(lpthread_mutex_t *mutex);
+int Lpthread_mutex_lock(lpthread_mutex_t *mutex);
+int Lpthread_mutex_init(lpthread_mutex_t *restrict mutex, const lmutex_attr_t *restrict attr);
+int Lpthread_mutex_unlock(lpthread_mutex_t *mutex);
+int Lpthread_mutex_trylock(lpthread_mutex_t *mutex);
+void initLpthreads();
+int mapPidI(pid_t id);
 
 #endif
