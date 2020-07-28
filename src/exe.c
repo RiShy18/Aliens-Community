@@ -793,10 +793,10 @@ char *iconPath = "../assets/images/icon.png";
 
             if (SDL_HasIntersection(&mouse_rect, &img_rect))
             {
-              printf("Quitando Alien\n");
+              
               //lpthreads_t *thread = curr->thread;
               //pthread_exit(thread->pid);
-              printf("Alien Eliminado\n");
+              
 
               llist_remove_by_index(aliens_a, i);
               list_a_size--;
@@ -1000,7 +1000,6 @@ char *iconPath = "../assets/images/icon.png";
     }
   }
 
-  printf("ALIENS A JOINED\n");
 
   if (aliens_b_size != 0)
   {
@@ -1017,7 +1016,7 @@ char *iconPath = "../assets/images/icon.png";
     }
   }
 
-  printf("ALIENS B JOINED\n");
+  
 
   Lpthread_join(automatic_mode, NULL);
 
@@ -1107,9 +1106,9 @@ int alien_a_thread(void *param)
   int hola = generate_random(3, 1);
   //int hola = 1;
 
-  printf("creando alien\n");
+  
   alien *my_alien = llist_get_by_index(aliens_a, index);
-  printf("Alien en mapa\n");
+ 
 
   int id = my_alien->thread->pid;
   my_alien->id = id;
@@ -1176,7 +1175,7 @@ int alien_a_thread(void *param)
 
   list_a_size--;
 
-  printf("Thread end\n");
+  
 
   return 0;
 }
@@ -1189,9 +1188,9 @@ int alien_b_thread(void *param)
 
   //int hola = 1;
 
-  printf("creando alien\n");
+  
   alien *my_alien = llist_get_by_index(aliens_b, index);
-  printf("alien en el mapa\n");
+  
 
   int id = my_alien->thread->pid;
   my_alien->id = id;
@@ -1206,7 +1205,7 @@ int alien_b_thread(void *param)
     move(&my_alien->pos, routes_b[hola][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
   }
 
-  printf("Espero puente\n");
+  
 
   while(my_alien->enterBridge == 0);
 
