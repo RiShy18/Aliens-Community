@@ -1,4 +1,7 @@
-- SDL
-- SDL Image
-- SDL TTF
-- libconfig
+unzip files
+
+cd file
+./configure 
+make
+sudo make install
+cd ..
