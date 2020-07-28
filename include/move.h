@@ -5,7 +5,7 @@ void move(point *actual, point dest, float velocity, llist *list, int index, int
 int stop_move(point *actual, point dest, float dist_x, float dist_y);
 void init_routes(point routes_a[8][3], point routes_b[8][3]);
 void move_bridge(point *actual, float *progress, int direcction, float velocity, llist *list, int index, int community, int inBridge);
-float generate_alien_velocity(int type, int base_velocity, int percentage);
+float generate_alien_speed(int type, int base_velocity, int percentage);
 void move_invader(point *actual, point dest, float velocity, llist aliens_a, llist aliens_b, int list_a_size, int list_b_size);
 
 #endif

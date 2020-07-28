@@ -794,8 +794,7 @@ char *iconPath = "../assets/images/icon.png";
             if (SDL_HasIntersection(&mouse_rect, &img_rect))
             {
               
-              //lpthreads_t *thread = curr->thread;
-              //pthread_exit(thread->pid);
+              
               
 
               llist_remove_by_index(aliens_a, i);
@@ -1050,7 +1049,7 @@ int spawn_alien(int community, int type)
   entity->elapsed = NULL;
 
   int percentage = (rand() % (200 - 50 + 1)) + 50;
-  entity->velocity = generate_alien_velocity(entity->type, velocity, percentage);
+  entity->velocity = generate_alien_speed(entity->type, velocity, percentage);
 
   if (community == 0)
   {
@@ -1103,8 +1102,8 @@ int alien_a_thread(void *param)
 {
   int index = *((int *)param);
 
-  int hola = generate_random(3, 1);
-  //int hola = 1;
+  int random = randomize(3, 1);
+
 
   
   alien *my_alien = llist_get_by_index(aliens_a, index);
@@ -1122,12 +1121,11 @@ int alien_a_thread(void *param)
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_a[hola][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
+    move(&my_alien->pos, routes_a[random][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
   }
 
   while(my_alien->enterBridge == 0);
 
-  //printf("XAct: %f, YAct: %f\n", my_alien->pos.y, my_alien->pos.x);
 
 
   point jump;
@@ -1143,7 +1141,7 @@ int alien_a_thread(void *param)
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_a[hola + 3][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
+    move(&my_alien->pos, routes_a[random + 3][i], my_alien->velocity, aliens_a, my_alien->id, 0, my_alien->crossedBridge);
     my_alien->crossedBridge = 0;
   }
 
@@ -1184,9 +1182,9 @@ int alien_b_thread(void *param)
 {
   int index = *((int *)param);
 
-  int hola = generate_random(3, 1);
+  int random = randomize(3, 1);
 
-  //int hola = 1;
+  //int random = 1;
 
   
   alien *my_alien = llist_get_by_index(aliens_b, index);
@@ -1202,7 +1200,7 @@ int alien_b_thread(void *param)
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_b[hola][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
+    move(&my_alien->pos, routes_b[random][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
   }
 
   
@@ -1224,7 +1222,7 @@ int alien_b_thread(void *param)
 
   for (int i = 0; i < 3; ++i)
   {
-    move(&my_alien->pos, routes_b[hola + 3][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
+    move(&my_alien->pos, routes_b[random + 3][i], my_alien->velocity, aliens_b, my_alien->id, 1, my_alien->crossedBridge);
     my_alien->crossedBridge = 0;
 
   }
@@ -1276,12 +1274,12 @@ int automatic_mode_thread(void *param)
 
   printf("AUTOMATIC THREAD WAITING TIME = %f\n", wait);
 
-  generate_probability(a_probability, b_probability, percentages);
+  probability(a_probability, b_probability, percentages);
 
   while (!finish)
   {
-    int index_a = generate_random(9, 0);
-    int index_b = generate_random(9, 0);
+    int index_a = randomize(9, 0);
+    int index_b = randomize(9, 0);
 
     printf("SPAWNED A ALIEN, TYPE = %d\n", a_probability[index_a]);
     printf("SPAWNED B ALIEN, TYPE = %d\n", b_probability[index_b]);
@@ -1297,7 +1295,7 @@ int automatic_mode_thread(void *param)
 
 int invader_thread(void *param)
 {
-  int a_b = generate_random(1, 0);
+  int a_b = randomize(1, 0);
   point route[8][3];
 
   if (a_b == 0)
@@ -1313,7 +1311,7 @@ int invader_thread(void *param)
     invader->pos.y = 530;
   }
 
-  int rand_route = generate_random(3, 1);
+  int rand_route = randomize(3, 1);
 
   for (int i = 0; i < 3; ++i)
   {

@@ -241,7 +241,7 @@ int valdite_args(int argc, char *argv[], int *medium)
   return 1;
 }
 
-int generate_random(int upper, int lower)
+int randomize(int upper, int lower)
 {
   return (rand() % (upper - lower + 1)) + lower;
 }
@@ -254,7 +254,7 @@ double ran_expo(double lambda)
   return -log(1 - u) / lambda;
 }
 
-void generate_probability(int *a_probability, int *b_probability, int *percentages)
+void probability(int *a_probability, int *b_probability, int *percentages)
 {
   int a_alpha = percentages[1];
   int a_beta = percentages[2];

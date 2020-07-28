@@ -255,7 +255,7 @@ alien *calen_lotterry(llist *extremo){
     maxLot += temp->lottery_numbers;
   }
 
-  int lot = generate_random(maxLot, 1);
+  int lot = randomize(maxLot, 1);
 
   int maxL = 0;
   int downLimit = 0;

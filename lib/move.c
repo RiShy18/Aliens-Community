@@ -134,20 +134,7 @@ void move(point *actual, point dest, float velocity, llist *list, int index, int
   actual->y = ceil(actual->y);
 }
 
-void move_bridge(point *actual, float *progress, int direcction, float velocity, llist *list, int index, int community, int inBridge)
-{
-  float init_pos_y = actual->y;
-  int bridge_height = 120;
-  point puente_tope;
-  if(community == 1){
-    puente_tope.x = actual->x;
-    puente_tope.y = 300.0;
-  }else{
-    puente_tope.x = actual->x;
-    puente_tope.y = 360.0;
-  }
-  move(actual, puente_tope, velocity, list, index, community, inBridge);
-}
+
 
 void move_invader(point *actual, point dest, float velocity, llist *aliensA, llist *aliensB, int listASize, int listBSize)
 {
@@ -238,7 +225,6 @@ void move_invader(point *actual, point dest, float velocity, llist *aliensA, lli
 
         llist_remove_by_index(aliensB, i);
         listBSize-=1;
-        //aliensB.size-=1;
       }
     }
 
@@ -256,7 +242,7 @@ void move_invader(point *actual, point dest, float velocity, llist *aliensA, lli
   actual->y = ceil(actual->y);
 }
 
-float generate_alien_velocity(int type, int base_velocity, int percentage)
+float generate_alien_speed(int type, int base_velocity, int percentage)
 {
   float result = 1;
 
@@ -281,9 +267,24 @@ float generate_alien_velocity(int type, int base_velocity, int percentage)
   return result;
 }
 
+void move_bridge(point *actual, float *progress, int direcction, float velocity, llist *list, int index, int community, int inBridge)
+{
+  float init_pos_y = actual->y;
+  int bridge_height = 120;
+  point puente_tope;
+  if(community == 1){
+    puente_tope.x = actual->x;
+    puente_tope.y = 300.0;
+  }else{
+    puente_tope.x = actual->x;
+    puente_tope.y = 360.0;
+  }
+  move(actual, puente_tope, velocity, list, index, community, inBridge);
+}
+
 void init_routes(point routes_a[8][3], point routes_b[8][3])
 {
-  /* Community A to Init Pink */
+  
   routes_a[0][0].x = 90;
   routes_a[0][0].y = 60;
 
@@ -293,7 +294,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_a[0][2].x = 630;
   routes_a[0][2].y = 120;
 
-  /* Left A Init Pink to Bridge Init */
+  
   routes_a[1][0].x = 330;
   routes_a[1][0].y = 120;
 
@@ -303,7 +304,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_a[1][2].x = 330;
   routes_a[1][2].y = 270;
 
-  /* Left A End Bridge to End Pink */
+  
   routes_a[4][0].x = 330;
   routes_a[4][0].y = 530;
 
@@ -313,7 +314,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_a[4][2].x = 690;
   routes_a[4][2].y = 530;
 
-  /* Right A Init Pink to Bridge Init  A */
+  
   routes_a[2][0].x = 660;
   routes_a[2][0].y = 150;
 
@@ -323,7 +324,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_a[2][2].x = 990;
   routes_a[2][2].y = 270;
 
-  /* Right A Bridge End to Pink End */
+  
   routes_a[5][0].x = 990;
   routes_a[5][0].y = 510;
 
@@ -333,7 +334,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_a[5][2].x = 690;
   routes_a[5][2].y = 530;
 
-  /* Center A Init Pink to Bridge Init */
+  
   routes_a[3][0].x = 660;
   routes_a[3][0].y = 150;
 
@@ -343,7 +344,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_a[3][2].x = 660;
   routes_a[3][2].y = 270;
 
-  /* Center A End Bridge to Pink End */
+  
   routes_a[6][0].x = 660;
   routes_a[6][0].y = 420;
 
@@ -353,7 +354,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_a[6][2].x = 690;
   routes_a[6][2].y = 530;
 
-  /* End Pink to Community A */
+  
   routes_a[7][0].x = 690;
   routes_a[7][0].y = 630;
 
@@ -363,7 +364,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_a[7][2].x = 1230;
   routes_a[7][2].y = 390;
 
-  /* Community B to Pink */
+  
   routes_b[0][0].x = 1290;
   routes_b[0][0].y = 680;
 
@@ -373,7 +374,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_b[0][2].x = 630;
   routes_b[0][2].y = 530;
 
-  /* Left B Init Pink to Init Bridge */
+  
   routes_b[1][0].x = 600;
   routes_b[1][0].y = 500;
 
@@ -383,7 +384,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_b[1][2].x = 360;
   routes_b[1][2].y = 390;
 
-  /* Left B End Bridge to End Pink */
+  
   routes_b[4][0].x = 360;
   routes_b[4][0].y = 150;
 
@@ -393,7 +394,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_b[4][2].x = 690;
   routes_b[4][2].y = 120;
 
-  /* Right B Init Pink to Init Pink */
+  
   routes_b[2][0].x = 1020;
   routes_b[2][0].y = 530;
 
@@ -403,7 +404,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_b[2][2].x = 1020;
   routes_b[2][2].y = 390;
 
-  /* Right B End Bridge to End Pink */
+  
   routes_b[5][0].x = 1020;
   routes_b[5][0].y = 120;
 
@@ -413,7 +414,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_b[5][2].x = 690;
   routes_b[5][2].y = 120;
 
-  /* Center B Init Pink to Init Bridge */
+  
   routes_b[3][0].x = 690;
   routes_b[3][0].y = 500;
 
@@ -423,7 +424,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_b[3][2].x = 690;
   routes_b[3][2].y = 390;
 
-  /* Center B End Pink to End Bridge */
+  
   routes_b[6][0].x = 690;
   routes_b[6][0].y = 240;
 
@@ -433,7 +434,7 @@ void init_routes(point routes_a[8][3], point routes_b[8][3])
   routes_b[6][2].x = 690;
   routes_b[6][2].y = 120;
 
-  /* Pink End to Community B*/
+ 
   routes_b[7][0].x = 690;
   routes_b[7][0].y = 0;
 
